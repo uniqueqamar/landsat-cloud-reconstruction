@@ -10,7 +10,7 @@ import rasterio
 import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
-from model import Generator, Discriminator
+from model import Generator, ContextResidualGenerator, Discriminator
 
 
 def synthetic_mask(height, width, rng):
@@ -46,10 +46,18 @@ class ClearPatches(Dataset):
 
 
 class TemporalPairs(Dataset):
-    def __init__(self, root, split):
+    def __init__(self, root, split, expanded=False, augment=False):
         self.root = root
+        self.augment = augment
+        self.rng = np.random.default_rng(42)
+        self.shard_cache = {}
         with (root / 'pairs.csv').open() as f:
             self.rows = [r for r in csv.DictReader(f) if r['split'] == split]
+        if expanded:
+            if split != 'train':
+                raise ValueError('Expanded shards are training-only')
+            with (root / 'expanded_train/index.csv').open() as f:
+                self.rows.extend(csv.DictReader(f))
         if not self.rows:
             raise ValueError(f'No temporal pairs for {split}')
 
@@ -58,14 +66,33 @@ class TemporalPairs(Dataset):
 
     def __getitem__(self, i):
         row = self.rows[i]
-        with rasterio.open(self.root / row['input']) as src:
-            observed = src.read([1, 2, 3, 4]).astype('float32') * .0000275 - .2
-            qa = src.read(5)
-        with rasterio.open(self.root / row['target']) as src:
-            reference = src.read([1, 2, 3, 4]).astype('float32') * .0000275 - .2
+        if 'shard' in row:
+            name = row['shard']
+            if name not in self.shard_cache:
+                with np.load(self.root / name, allow_pickle=False) as z:
+                    arrays = {k: z[k] for k in ['observed', 'target', 'qa_pixel']}
+                if len(self.shard_cache) >= 4:
+                    self.shard_cache.pop(next(iter(self.shard_cache)))
+                self.shard_cache[name] = arrays
+            z = self.shard_cache[name]; index = int(row['index'])
+            observed = z['observed'][index].astype('float32') * .0000275 - .2
+            reference = z['target'][index].astype('float32') * .0000275 - .2
+            qa = z['qa_pixel'][index]
+        else:
+            with rasterio.open(self.root / row['input']) as src:
+                observed = src.read([1, 2, 3, 4]).astype('float32') * .0000275 - .2
+                qa = src.read(5)
+            with rasterio.open(self.root / row['target']) as src:
+                reference = src.read([1, 2, 3, 4]).astype('float32') * .0000275 - .2
         mask = ((qa & sum(1 << b for b in (1, 2, 3, 4))) != 0).astype('float32')[None]
         # Preserve observed pixels in the discriminator's real composite too.
         target = reference * mask + observed * (1 - mask)
+        if self.augment:
+            rotations = int(self.rng.integers(0, 4))
+            observed, mask, target = [np.rot90(x, rotations, axes=(-2, -1)).copy()
+                                      for x in (observed, mask, target)]
+            if self.rng.random() < .5:
+                observed, mask, target = [x[..., ::-1].copy() for x in (observed, mask, target)]
         return tuple(torch.from_numpy(x) for x in (observed, mask, target))
 
 
@@ -109,6 +136,10 @@ def main():
     p.add_argument('--gan-weight', type=float, default=0.)
     p.add_argument('--warmup', type=int, default=2)
     p.add_argument('--task', choices=['synthetic', 'temporal'], default='synthetic')
+    p.add_argument('--architecture', choices=['legacy', 'context_residual_v2'], default='legacy')
+    p.add_argument('--expanded-train', action='store_true')
+    p.add_argument('--augment', action='store_true')
+    p.add_argument('--learning-rate', type=float, default=2e-4)
     p.add_argument('--max-steps', type=int, default=0, help='Smoke test only; 0 means full run')
     a = p.parse_args()
     random.seed(42)
@@ -116,12 +147,13 @@ def main():
     torch.manual_seed(42)
     torch.set_num_threads(2)
     device = choose_device()
-    model = Generator().to(device)
+    model = (ContextResidualGenerator() if a.architecture == 'context_residual_v2' else Generator()).to(device)
     discriminator = Discriminator().to(device) if a.gan_weight else None
-    optimizer = torch.optim.Adam(model.parameters(), lr=2e-4)
+    optimizer = torch.optim.Adam(model.parameters(), lr=a.learning_rate)
     d_optimizer = torch.optim.Adam(discriminator.parameters(), lr=1e-4) if discriminator else None
     bce = nn.BCEWithLogitsLoss()
-    train_data = ClearPatches(a.data, 'train') if a.task == 'synthetic' else TemporalPairs(a.data, 'train')
+    train_data = ClearPatches(a.data, 'train') if a.task == 'synthetic' else TemporalPairs(
+        a.data, 'train', expanded=a.expanded_train, augment=a.augment)
     val_data = ClearPatches(a.data, 'val', seed=1000) if a.task == 'synthetic' else TemporalPairs(a.data, 'val')
     train = DataLoader(train_data, batch_size=a.batch_size,
                        shuffle=True, num_workers=0)
@@ -129,6 +161,16 @@ def main():
     print(f'Device: {device}; generator parameters: {sum(p.numel() for p in model.parameters()):,}', flush=True)
     a.output.mkdir(parents=True, exist_ok=True)
     history, best, steps = [], float('inf'), 0
+    if a.architecture == 'context_residual_v2':
+        # An unchanged mean fill is a valid incumbent; retain it if training fails.
+        initial = evaluate(model, val, device, a.task)
+        best = initial['masked_mae']
+        history.append(dict(epoch=0, train_loss=None, **initial))
+        torch.save(dict(model={k:v.detach().cpu() for k,v in model.state_dict().items()},
+                        width=16, architecture=a.architecture, training=a.task,
+                        bands=['B2','B3','B4','B5'], scale=.0000275, offset=-.2,
+                        epoch=0, gan_weight=a.gan_weight, train_samples=len(train_data)), a.output/'best.pt')
+        print(json.dumps(history[-1]), flush=True)
     for epoch in range(a.epochs):
         model.train()
         losses = []
@@ -164,7 +206,10 @@ def main():
         checkpoint = dict(model={k: v.detach().cpu() for k, v in model.state_dict().items()}, width=16,
                           bands=['B2', 'B3', 'B4', 'B5'], scale=.0000275, offset=-.2,
                           training=a.task, temporal_proxy_targets=a.task == 'temporal',
-                          gan_weight=a.gan_weight, epoch=epoch + 1)
+                          gan_weight=a.gan_weight, epoch=epoch + 1,
+                          architecture=a.architecture, train_samples=len(train_data),
+                          expanded_train=a.expanded_train, augment=a.augment,
+                          learning_rate=a.learning_rate)
         torch.save(checkpoint, a.output / 'last.pt')
         if scores['masked_mae'] < best:
             best = scores['masked_mae']

@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 import rasterio
 import torch
-from model import Generator
+from model import make_generator
 from train import choose_device
 
 
@@ -17,7 +17,7 @@ def main():
     a = p.parse_args()
     device = choose_device()
     checkpoint = torch.load(a.weights, map_location='cpu', weights_only=True)
-    model = Generator(checkpoint['width']).to(device)
+    model = make_generator(checkpoint).to(device)
     model.load_state_dict(checkpoint['model'])
     model.eval()
     with rasterio.open(a.input) as src:
@@ -41,6 +41,7 @@ def main():
         for i, band in enumerate(['blue', 'green', 'red', 'nir'], 1):
             dst.set_band_description(i, band + '_estimated_surface_reflectance')
         dst.update_tags(method=f'{checkpoint["training"]}-trained generator; experimental reconstruction',
+                        architecture=checkpoint.get('architecture', 'legacy'),
                         mask_source='QA_PIXEL cloud/cirrus/dilated cloud/shadow',
                         warning='Generated pixels are estimates, not ground truth')
     rgb = np.moveaxis(out[[2, 1, 0]], 0, -1)

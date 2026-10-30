@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
-from model import Generator
+from model import make_generator
 from train import ClearPatches, TemporalPairs, choose_device, evaluate
 
 
@@ -23,7 +23,7 @@ def main():
     dataset = (ClearPatches(a.data, a.split, seed=1000) if c['training'] == 'synthetic' else
                TemporalPairs(a.data, a.split))
     loader = DataLoader(dataset, batch_size=1, num_workers=0)
-    model = Generator(c['width']).to(device)
+    model = make_generator(c).to(device)
     model.load_state_dict(c['model'])
     scores = evaluate(model, loader, device, c['training'], a.split)
     absolute = squared = count = 0.

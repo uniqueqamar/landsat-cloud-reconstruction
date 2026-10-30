@@ -1,0 +1,118 @@
+{
+  "split": "val",
+  "patches": 9,
+  "search_radius_pixels": 2,
+  "method": "Pearson correlation of red-band values outside cloud/shadow masks plus a 3-pixel guard",
+  "caveat": "Coarse diagnostic only. Different acquisition dates and sensors affect correlations; this does not prove subpixel alignment.",
+  "reference_used_as_model_input": false,
+  "records": [
+    {
+      "input": "data/cloudy/val/r04608_c02176.tif",
+      "zero_shift_correlation": 0.9066562033245807,
+      "best_integer_shift": [
+        0,
+        0
+      ],
+      "best_correlation": 0.9066562033245807,
+      "correlation_gain": 0.0,
+      "mask_boundary_ring_mae": 0.01435756403952837,
+      "far_clear_mae": 0.012065114453434944
+    },
+    {
+      "input": "data/cloudy/val/r02432_c06784.tif",
+      "zero_shift_correlation": 0.8102863498591883,
+      "best_integer_shift": [
+        0,
+        0
+      ],
+      "best_correlation": 0.8102863498591883,
+      "correlation_gain": 0.0,
+      "mask_boundary_ring_mae": 0.02478412538766861,
+      "far_clear_mae": 0.01726253144443035
+    },
+    {
+      "input": "data/cloudy/val/r00128_c01792.tif",
+      "zero_shift_correlation": 0.6980289398631624,
+      "best_integer_shift": [
+        0,
+        0
+      ],
+      "best_correlation": 0.6980289398631624,
+      "correlation_gain": 0.0,
+      "mask_boundary_ring_mae": 0.020417099818587303,
+      "far_clear_mae": 0.012707657180726528
+    },
+    {
+      "input": "data/cloudy/val/r04864_c02432.tif",
+      "zero_shift_correlation": 0.6931203774137407,
+      "best_integer_shift": [
+        0,
+        0
+      ],
+      "best_correlation": 0.6931203774137407,
+      "correlation_gain": 0.0,
+      "mask_boundary_ring_mae": 0.02085134945809841,
+      "far_clear_mae": 0.017837531864643097
+    },
+    {
+      "input": "data/cloudy/val/r04352_c02304.tif",
+      "zero_shift_correlation": 0.6761718539629927,
+      "best_integer_shift": [
+        0,
+        0
+      ],
+      "best_correlation": 0.6761718539629927,
+      "correlation_gain": 0.0,
+      "mask_boundary_ring_mae": 0.02092467062175274,
+      "far_clear_mae": 0.012177659198641777
+    },
+    {
+      "input": "data/cloudy/val/r04352_c02176.tif",
+      "zero_shift_correlation": 0.827990503987234,
+      "best_integer_shift": [
+        0,
+        0
+      ],
+      "best_correlation": 0.827990503987234,
+      "correlation_gain": 0.0,
+      "mask_boundary_ring_mae": 0.020157329738140106,
+      "far_clear_mae": 0.014659355394542217
+    },
+    {
+      "input": "data/cloudy/val/r04224_c02304.tif",
+      "zero_shift_correlation": 0.5763271715312435,
+      "best_integer_shift": [
+        0,
+        0
+      ],
+      "best_correlation": 0.5763271715312435,
+      "correlation_gain": 0.0,
+      "mask_boundary_ring_mae": 0.02334568090736866,
+      "far_clear_mae": 0.014494894072413445
+    },
+    {
+      "input": "data/cloudy/val/r02432_c06656.tif",
+      "zero_shift_correlation": 0.8725495527268026,
+      "best_integer_shift": [
+        0,
+        0
+      ],
+      "best_correlation": 0.8725495527268026,
+      "correlation_gain": 0.0,
+      "mask_boundary_ring_mae": 0.021201029419898987,
+      "far_clear_mae": 0.0157613605260849
+    },
+    {
+      "input": "data/cloudy/val/r04480_c02816.tif",
+      "zero_shift_correlation": 0.8778182641729364,
+      "best_integer_shift": [
+        0,
+        0
+      ],
+      "best_correlation": 0.8778182641729364,
+      "correlation_gain": 0.0,
+      "mask_boundary_ring_mae": 0.014281132258474827,
+      "far_clear_mae": 0.010293424129486084
+    }
+  ]
+}

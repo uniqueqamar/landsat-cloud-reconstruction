@@ -1,0 +1,29 @@
+{
+  "additional_training_pairs": 96,
+  "patch_size": 128,
+  "source_scene": "LC09_L2SP_141044_20260927_20260928_02_T1",
+  "reference_scene": "LC08_L2SP_141044_20261005_20261009_02_T1",
+  "gap_days": 8,
+  "added_validation_pairs": 0,
+  "added_test_pairs": 0,
+  "selection": "Deterministic training macroblocks only; exclude all existing patch coordinates",
+  "crs": "EPSG:32645",
+  "optical_scale": 2.75e-05,
+  "optical_offset": -0.2,
+  "optical_resampling": "bilinear",
+  "quality_resampling": "nearest",
+  "shard_hashes": {
+    "train_009.npz": "d8a8d9cc501b04e8258fcfc2991ecc82fc27918c7ce8493433b3f80fed993bb9",
+    "train_008.npz": "ad09be1d21b6cfd27e53b0861c3d9483394216af9acb99cc32fcb7ec8376f625",
+    "train_000.npz": "80707c99bdd1739b98f9cecad37bc9cecd27e64f3be2e63fe0997822ffeac13b",
+    "train_003.npz": "89c852e35bf5f8e4d15f2bc99eadce43c93440aa845336d979c220c98f8532e3",
+    "train_004.npz": "2effb11c29408bf9d98d39c0086f1e3407de3e68a742cd5639979418182d56b5",
+    "train_007.npz": "99868eeb25013f03ff54c19e52b572e1d7cc3003964ddb2ac39e05e791d021ac",
+    "train_002.npz": "fc608fd42aa81bc4c98596828d275a52312a937413dc8a9a921508debbb96a3e",
+    "train_010.npz": "2096d05ca893a97da49482c4a7df909d6b760a3e6c80df946c5b5f75b17a22a9",
+    "train_001.npz": "86f85e18e323073c340469199982aa3e6599fa5d0a1cc76a67265e3fceaa5011",
+    "train_011.npz": "a008bc3ab3ac53d96c60dab2973cb58ae45907a89117cda50adf20ac5ff126de",
+    "train_006.npz": "e61268ea63a8de8dde72c3bba7ca0be07168a226c995ec5fcd6df323028c73dc",
+    "train_005.npz": "749ca1a717b3b03be8e3b4659c8fdf7065891b157581a1390ce88dce8faf3877"
+  }
+}

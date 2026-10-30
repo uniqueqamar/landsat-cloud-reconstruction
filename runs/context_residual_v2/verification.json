@@ -1,0 +1,19 @@
+{
+  "training_pairs": 118,
+  "validation_pairs": 9,
+  "new_validation_masked_mae": 0.016666240464429934,
+  "original_validation_masked_mae": 0.02169915850494286,
+  "mean_fill_validation_masked_mae": 0.017539599339739503,
+  "selected_epoch": 7,
+  "test_rerun": false,
+  "clear_pixels_preserved": true,
+  "legacy_predictions_unchanged": true,
+  "cloud_value_invariance": true,
+  "trained_on": "execution environment CPU; not user Mac",
+  "limitations": [
+    "single scene",
+    "8-day Landsat 8 temporal proxy targets",
+    "no SAR",
+    "smooth estimates; missing hidden field detail"
+  ]
+}

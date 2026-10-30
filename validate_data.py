@@ -1,5 +1,7 @@
 """Check the actual delivered rasters, split separation, and optional pair alignment."""
 import csv
+import json
+import hashlib
 from pathlib import Path
 from collections import defaultdict
 import numpy as np
@@ -34,6 +36,27 @@ def validate(root):
                 assert not np.any(b.read(6) & sum(1 << k for k in (1, 2, 3, 4, 11)))
             pair_count += 1
     print(f'PASS: {len(rows)} patches; geographic split guards; {pair_count} aligned temporal pairs')
+    if (root/'expanded_train/index.csv').exists():
+        from prepare_data import split_for
+        extra=list(csv.DictReader((root/'expanded_train/index.csv').open()))
+        existing={(int(r['row']),int(r['col'])) for r in rows}
+        coordinates=set()
+        summary=json.loads((root/'expanded_train/summary.json').read_text())
+        for name, digest in summary['shard_hashes'].items():
+            assert hashlib.sha256((root/'expanded_train'/name).read_bytes()).hexdigest()==digest
+        for row in extra:
+            coordinate=int(row['row']),int(row['col'])
+            assert coordinate not in existing and coordinate not in coordinates
+            assert split_for(coordinate[0]//128,coordinate[1]//128)=='train'
+            assert row['split']=='train'
+            coordinates.add(coordinate)
+            with np.load(root/row['shard'],allow_pickle=False) as z:
+                i=int(row['index'])
+                assert z['observed'][i].shape==z['target'][i].shape==(4,128,128)
+                assert z['observed'].dtype==z['target'].dtype==np.uint16
+                assert np.all(z['observed'][i]!=0) and np.all(z['target'][i]!=0)
+                assert not np.any(z['qa_pixel'][i]&33)
+        print(f'PASS: {len(extra)} extra training pairs; hashes, shapes, validity, no split overlap')
 
 
 if __name__ == '__main__':

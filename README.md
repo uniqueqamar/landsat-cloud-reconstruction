@@ -1,8 +1,88 @@
 # Landsat cloud reconstruction: a small, runnable starter project
 
 This package contains real satellite patches extracted for Qamareen's project,
-working preparation/training/inference code, and three short-run trained generators.
+working preparation/training/inference code, and four short-run trained generators.
 The large source scenes are not included. You can start with this package alone.
+
+## Latest update: a stronger reconstruction baseline (v2)
+
+The new context-residual model starts from mean filling and learns small, bounded
+corrections in reflectance units. Cloud-covered values are removed before feature
+extraction. This reduces the conspicuous coloured boundary artifacts of the first
+GAN, but reconstructed regions still look smooth and field details are not recovered.
+
+![Original and revised predictions on the same validation patch](runs/context_residual_v2/comparison.png)
+
+An additional **96 training pairs** bring the real-pair training set to **118**.
+All new patches come from the existing training macroblocks in the same scene.
+Validation (9 pairs) and test (10 pairs) were not expanded or reassigned.
+
+| Method | Validation masked MAE (lower is better) | Validation masked PSNR |
+| --- | ---: | ---: |
+| Original temporal GAN | 0.021699 | 29.06 dB |
+| Observed-pixel mean fill | 0.017540 | 30.69 dB |
+| Revised context-residual model | **0.016666** | **31.12 dB** |
+
+The new model's validation MAE is about 23.2% lower than the original GAN and 5.0%
+lower than mean fill. These are results on **nine validation patches from one
+scene**, not evidence of cross-region generalization or statistically established
+superiority. V2 was selected on validation MAE after 10 reconstruction-only epochs;
+the best checkpoint is epoch 7. It has no adversarial loss. The original conditional
+GAN experiments remain available, but GAN training is not the recommended next
+step until the reconstruction baseline and dataset are stronger. The older test
+results below belong to the original GAN; v2 has not been evaluated again on that
+previously used test set during this update.
+
+Update your Mac checkout, validate the files, and view the fixed comparison:
+
+```bash
+git pull
+python validate_data.py
+python compare_models.py
+open outputs/v2_comparison.png
+```
+
+Run the new model on the same real cloudy patch:
+
+```bash
+python predict.py \
+  --weights runs/context_residual_v2/best.pt \
+  --input data/cloudy/val/r04608_c02176.tif \
+  --output outputs/v2_prediction.tif
+```
+
+Reproduce the new training run (batch size 1, augmentation, 118 pairs):
+
+```bash
+python train.py --task temporal --architecture context_residual_v2 \
+  --expanded-train --augment --learning-rate 0.0001 --epochs 10 \
+  --output runs/my_context_residual_v2
+```
+
+`expanded_train/` contains 12 compressed NumPy shards, each holding eight
+four-band cloudy/target pairs plus input QA_PIXEL values. Optical values are
+uint16 DNs, using the same reflectance scaling as the original GeoTIFFs.
+`expanded_train/index.csv` records each sample's coordinates and bounds;
+`expanded_train/summary.json` records CRS, sampling rules, provenance, and hashes.
+This is an additional 21 MB of training data, not full satellite scenes.
+The training loader caches at most four shards. No new dependencies are required.
+
+`expand_training.py` reproduces this selection from the original local six-band
+inputs and local reference scene. The existing validator also checks the new
+shard hashes, shapes, coordinates, and separation from validation/test locations.
+The original extraction scripts, TIFFs, models, and commands remain compatible.
+
+`audit_alignment.py` checks clear areas on validation patches at integer offsets
+within two pixels. It found no correlation improvement from shifting the reference;
+median zero-shift red-band correlation was 0.81. This is a coarse diagnostic,
+not proof of perfect subpixel alignment. The audit never adjusts the target or
+passes reference pixels to the model as inputs. Its full output is in
+`runs/context_residual_v2/alignment_audit.json`.
+
+The main remaining limitation is reconstructing actual hidden structure from
+optical context alone. A clearer image eight days later remains a proxy target,
+and the current single-scene dataset has no SAR. Smooth-looking generated regions
+are estimates, not measurements. The project is still an experimental prototype.
 
 ## What has actually been completed
 
@@ -14,14 +94,14 @@ The large source scenes are not included. You can start with this package alone.
 - Ran short synthetic reconstruction and conditional-GAN experiments and a 10-epoch conditional-GAN experiment on real cloudy/temporal-reference pairs.
 - Verified patch grids, geographic split separation, successful prediction, and exact preservation of observed clear pixels.
 
-## Honest result and current limitation
+## Original starter result and current limitation
 
 **This is an operational starter pipeline, not an accurate finished cloud-removal system.**
 
 On 10 geographically held-out temporal pairs, the short-run GAN achieved masked
 MAE **0.02380** versus **0.07797** for the original cloudy input. A much simpler
 per-band mean fill achieved **0.01824**, so the current GAN does **not** beat this
-baseline. Lower MAE is better. Its masked PSNR was 28.40 dB versus 30.53 dB for
+baseline. These numbers describe the original GAN, not v2. Lower MAE is better. Its masked PSNR was 28.40 dB versus 30.53 dB for
 mean fill, using a fixed reflectance-unit range of 1. Full results are in
 `runs/temporal_cgan/test_metrics.json`.
 
@@ -30,7 +110,7 @@ Do not present these numbers as state-of-the-art performance, or claim the GAN
 is better than conventional filling. The successful outcome of this stage is
 the small usable dataset, validated pipeline, and reproducible first results.
 
-Only 22 real pairs are used for training. The reference is eight days later and
+The original GAN used only 22 real pairs for training; v2 uses 118. The reference is eight days later and
 comes from Landsat 8 rather than Landsat 9. Vegetation, water, illumination,
 viewing geometry, and land use can change between dates. These are **temporal
 proxy targets**, not simultaneous ground truth beneath the clouds.
