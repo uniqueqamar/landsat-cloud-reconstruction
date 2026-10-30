@@ -1,0 +1,11 @@
+{
+  "masked_mae": 0.022348992912560026,
+  "masked_psnr_unit_range_db": 29.058275034869148,
+  "occluded_input_masked_mae": 0.7328965108430189,
+  "evaluation": "fixed synthetic occlusions, val split",
+  "mean_fill_masked_mae": 0.015795531623810966,
+  "mean_fill_masked_psnr_unit_range_db": 31.647969232148867,
+  "sample_count": 15,
+  "training": "synthetic",
+  "note": "Small single-scene experiment; temporal targets are not simultaneous ground truth."
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 0.08837122605958332,
+    "masked_mae": 0.027659639033428485,
+    "masked_psnr_unit_range_db": 27.417750891010574,
+    "occluded_input_masked_mae": 0.7328965108430189,
+    "evaluation": "fixed synthetic occlusions, validation split only"
+  },
+  {
+    "epoch": 2,
+    "train_loss": 0.027491845675588895,
+    "masked_mae": 0.025416340932736623,
+    "masked_psnr_unit_range_db": 28.107734038534304,
+    "occluded_input_masked_mae": 0.7328965108430189,
+    "evaluation": "fixed synthetic occlusions, validation split only"
+  },
+  {
+    "epoch": 3,
+    "train_loss": 0.026775731258870412,
+    "masked_mae": 0.022348992912560026,
+    "masked_psnr_unit_range_db": 29.058275034869148,
+    "occluded_input_masked_mae": 0.7328965108430189,
+    "evaluation": "fixed synthetic occlusions, validation split only"
+  },
+  {
+    "epoch": 4,
+    "train_loss": 0.024126362899551168,
+    "masked_mae": 0.02502640710767727,
+    "masked_psnr_unit_range_db": 28.82235765951618,
+    "occluded_input_masked_mae": 0.7328965108430189,
+    "evaluation": "fixed synthetic occlusions, validation split only"
+  },
+  {
+    "epoch": 5,
+    "train_loss": 0.02253427040219928,
+    "masked_mae": 0.028358676268336033,
+    "masked_psnr_unit_range_db": 28.336349397511125,
+    "occluded_input_masked_mae": 0.7328965108430189,
+    "evaluation": "fixed synthetic occlusions, validation split only"
+  }
+]

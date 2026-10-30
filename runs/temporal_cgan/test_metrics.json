@@ -1,0 +1,11 @@
+{
+  "masked_mae": 0.02380402728349767,
+  "masked_psnr_unit_range_db": 28.39988709591899,
+  "occluded_input_masked_mae": 0.07796597227200265,
+  "evaluation": "real cloudy inputs with eight-day temporal proxy targets, test split",
+  "mean_fill_masked_mae": 0.018240731376715422,
+  "mean_fill_masked_psnr_unit_range_db": 30.531330774087767,
+  "sample_count": 10,
+  "training": "temporal",
+  "note": "Small single-scene experiment; temporal targets are not simultaneous ground truth."
+}

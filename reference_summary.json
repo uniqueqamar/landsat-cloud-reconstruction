@@ -1,0 +1,16 @@
+{
+  "reference_scene": "LC08_L2SP_141044_20261005_02_T1",
+  "date": "2026-10-05",
+  "gap_days": 8,
+  "accepted_pairs": 41,
+  "rejected_inputs": [
+    "data/cloudy/test/r01408_c01408.tif",
+    "data/cloudy/train/r05504_c06528.tif",
+    "data/cloudy/train/r02176_c01536.tif",
+    "data/cloudy/test/r01152_c01408.tif",
+    "data/cloudy/val/r00512_c01536.tif",
+    "data/cloudy/val/r00640_c01536.tif",
+    "data/cloudy/val/r00768_c01536.tif"
+  ],
+  "caveat": "Landsat 8 temporal proxy targets for Landsat 9 inputs; seasonal or real changes may occur."
+}

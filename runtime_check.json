@@ -1,0 +1,8 @@
+{
+  "cpu_inference_ms_per_patch": 26.30386165000118,
+  "runs": 20,
+  "threads": 2,
+  "hardware": "execution environment CPU, not user Mac",
+  "includes_file_io": false,
+  "clear_pixels_preserved_exactly": true
+}

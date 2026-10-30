@@ -1,0 +1,30 @@
+{
+  "scene": "LC09_L2SP_141044_20260927_20260928_02_T1",
+  "date": "2026-09-27",
+  "pixel_size_m": 30,
+  "patch_size": 128,
+  "counts": {
+    "candidate_cloudy_val": 23,
+    "candidate_cloudy_train": 282,
+    "candidate_cloudy_test": 110,
+    "candidate_clear_test": 29,
+    "candidate_clear_train": 161,
+    "candidate_clear_val": 15,
+    "selected_clear_test": 24,
+    "selected_cloudy_train": 24,
+    "selected_cloudy_test": 12,
+    "selected_clear_train": 96,
+    "selected_clear_val": 15,
+    "selected_cloudy_val": 12
+  },
+  "real_clear_targets": false,
+  "sar_available": false,
+  "note": "135 QA-screened clear patches and 48 real cloudy patches. 41 cloudy patches have aligned eight-day-later Landsat 8 proxy targets. No simultaneous ground truth or SAR.",
+  "temporal_proxy_targets_available": true,
+  "temporal_pair_count": 41,
+  "temporal_pair_splits": {
+    "train": 22,
+    "test": 10,
+    "val": 9
+  }
+}

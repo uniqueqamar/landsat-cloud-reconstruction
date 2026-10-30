@@ -1,0 +1,26 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 0.08937723785250758,
+    "masked_mae": 0.027553188227147325,
+    "masked_psnr_unit_range_db": 27.477315893487265,
+    "occluded_input_masked_mae": 0.7328965108430189,
+    "evaluation": "fixed synthetic occlusions, validation split only"
+  },
+  {
+    "epoch": 2,
+    "train_loss": 0.031133241873855393,
+    "masked_mae": 0.024247280446787433,
+    "masked_psnr_unit_range_db": 28.594870368488728,
+    "occluded_input_masked_mae": 0.7328965108430189,
+    "evaluation": "fixed synthetic occlusions, validation split only"
+  },
+  {
+    "epoch": 3,
+    "train_loss": 0.027393027732614428,
+    "masked_mae": 0.021758738729093036,
+    "masked_psnr_unit_range_db": 29.22288427653661,
+    "occluded_input_masked_mae": 0.7328965108430189,
+    "evaluation": "fixed synthetic occlusions, validation split only"
+  }
+]
