@@ -4,6 +4,20 @@ This package contains real satellite patches extracted for Qamareen's project,
 working preparation/training/inference code, and four short-run trained generators.
 The large source scenes are not included. You can start with this package alone.
 
+## Live browser demo
+
+[Open Landsat Cloud Lab](https://landsat-cloud-lab-qam.snowywren64.chatgpt.site)
+
+The hosted demo initially has owner-only access. It runs the actual revised model
+in the browser on nine included validation patches, with RGB/NIR views, a mask
+overlay, later-reference inspection, per-patch proxy error, and PNG downloads.
+No running Mac, server GPU, or Terminal setup is needed. It is not a live satellite
+feed or an arbitrary-image upload service. Reconstruction limits remain unchanged.
+
+See [web/README.md](web/README.md) for source, optional local build instructions,
+runtime requirements, and numerical verification. Initial model/runtime loading
+is about 17 MB; inference speed depends on the visitor's device.
+
 ## Latest update: a stronger reconstruction baseline (v2)
 
 The new context-residual model starts from mean filling and learns small, bounded
