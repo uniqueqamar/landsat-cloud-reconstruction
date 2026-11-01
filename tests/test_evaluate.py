@@ -56,3 +56,24 @@ def test_no_clear_pixels_rejected_instead_of_zero_fill():
 def test_empty_dataset_rejected():
     with pytest.raises(ValueError, match='empty dataset'):
         evaluate_with_baseline(FixedFill(), [], torch.device('cpu'), 'synthetic')
+
+
+def test_mismatched_target_shape_rejected():
+    image, mask, target = sample()
+    with pytest.raises(ValueError, match='target shape'):
+        evaluate_with_baseline(FixedFill(), [(image, mask, target[:, :1])], torch.device('cpu'), 'temporal')
+
+
+def test_nonbinary_mask_rejected():
+    image, mask, target = sample()
+    mask[:, :, -1, -1] = .5
+    with pytest.raises(ValueError, match='finite binary'):
+        evaluate_with_baseline(FixedFill(), [(image, mask, target)], torch.device('cpu'), 'temporal')
+
+
+def test_wrong_prediction_shape_rejected():
+    class WrongShape(torch.nn.Module):
+        def forward(self, image, mask):
+            return image[:, :1]
+    with pytest.raises(ValueError, match='prediction shape'):
+        evaluate_with_baseline(WrongShape(), [sample()], torch.device('cpu'), 'temporal')
