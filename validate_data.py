@@ -6,6 +6,7 @@ from pathlib import Path
 from collections import defaultdict
 import numpy as np
 import rasterio
+from pair_integrity import check_pair_assignments
 
 
 def validate(root):
@@ -28,7 +29,9 @@ def validate(root):
     assert all(len(splits) == 1 for splits in blocks.values())
     pair_count = 0
     if (root / 'pairs.csv').exists():
-        for row in csv.DictReader((root / 'pairs.csv').open()):
+        pair_rows = list(csv.DictReader((root / 'pairs.csv').open()))
+        check_pair_assignments(rows, pair_rows)
+        for row in pair_rows:
             with rasterio.open(root / row['input']) as a, rasterio.open(root / row['target']) as b:
                 assert (a.shape, a.crs, a.transform) == (b.shape, b.crs, b.transform)
                 assert np.all(b.read([1, 2, 3, 4]) != 0)
