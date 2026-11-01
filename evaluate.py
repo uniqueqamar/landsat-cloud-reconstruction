@@ -26,6 +26,10 @@ def evaluate_with_baseline(model, loader, device, training, split='val', sample_
     for index, (image, mask, target) in enumerate(loader):
         if image.ndim != 4 or image.shape[0] != 1 or mask.shape != image.shape[:1] + (1,) + image.shape[2:]:
             raise ValueError('Evaluation requires batch_size=1 and a [N,1,H,W] mask')
+        if target.shape != image.shape:
+            raise ValueError(f'Sample {index} target shape must match image shape')
+        if not torch.isfinite(mask).all() or not torch.all((mask == 0) | (mask == 1)):
+            raise ValueError(f'Sample {index} mask must contain only finite binary values')
         image, mask, target = [t.to(device) for t in (image, mask, target)]
         masked_pixels = float(mask.sum().item())
         clear_pixels = float((1 - mask).sum().item())
@@ -35,6 +39,8 @@ def evaluate_with_baseline(model, loader, device, training, split='val', sample_
         denominator = masked_pixels * channels
         observed_mean = (image * (1 - mask)).sum((2, 3), keepdim=True) / (1 - mask).sum((2, 3), keepdim=True)
         predicted = model(image, mask)
+        if predicted.shape != target.shape:
+            raise ValueError(f'Sample {index} prediction shape must match target shape')
         model_error = (predicted - target) * mask
         baseline_error = (observed_mean - target) * mask
         original_error = (image - target) * mask
