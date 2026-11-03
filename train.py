@@ -112,17 +112,26 @@ def masked_mae(prediction, target, mask):
 def evaluate(model, loader, device, task, split='val'):
     model.eval()
     absolute = squared = original = count = 0.
+    skipped_unmasked = 0
     for observed, mask, target in loader:
         observed, mask, target = [t.to(device) for t in (observed, mask, target)]
+        # An entirely clear sample has no masked target pixels to score.
+        skipped_unmasked += int((mask.flatten(1).sum(dim=1) == 0).sum())
+        masked_pixels = float(mask.sum())
+        if masked_pixels == 0:
+            continue
         predicted = model(observed, mask)
         difference = predicted - target
         absolute += float((difference.abs() * mask).sum())
         squared += float((difference.square() * mask).sum())
         original += float(((observed - target).abs() * mask).sum())
-        count += float(mask.sum()) * 4
+        count += masked_pixels * 4
+    if count == 0:
+        raise ValueError(f'No masked pixels in {split} split; cannot compute masked metrics')
     return {'masked_mae': absolute / count,
             'masked_psnr_unit_range_db': -10 * np.log10(max(squared / count, 1e-12)),
             'occluded_input_masked_mae': original / count,
+            'skipped_unmasked_samples': skipped_unmasked,
             'evaluation': ('fixed synthetic occlusions' if task == 'synthetic' else
                            'real cloudy inputs with eight-day temporal proxy targets') + f', {split} split'}
 
