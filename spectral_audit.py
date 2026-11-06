@@ -23,6 +23,8 @@ def audit(model, loader, device):
         prediction = model(observed, mask)
         valid = 1 - mask
         mean = (observed * valid).sum((2, 3), keepdim=True) / valid.sum((2, 3), keepdim=True).clamp_min(1)
+        if torch.any(valid.sum((2, 3)) == 0):
+            raise ValueError('Cannot compute observed-pixel mean fill: sample has no clear pixels')
         baseline = observed * valid + mean * mask
         for j in range(observed.shape[0]):
             m = mask[j].detach().cpu().numpy()
