@@ -77,3 +77,23 @@ def test_wrong_prediction_shape_rejected():
             return image[:, :1]
     with pytest.raises(ValueError, match='prediction shape'):
         evaluate_with_baseline(WrongShape(), [sample()], torch.device('cpu'), 'temporal')
+
+
+def test_nonfinite_reference_rejected():
+    image, mask, target = sample()
+    target[:, :, -1, -1] = float('nan')
+    with pytest.raises(ValueError, match='image and target must be finite'):
+        evaluate_with_baseline(FixedFill(), [(image, mask, target)], torch.device('cpu'), 'temporal')
+
+
+def test_nonfinite_prediction_rejected():
+    class Nonfinite(torch.nn.Module):
+        def forward(self, image, mask):
+            return torch.full_like(image, float('inf'))
+    with pytest.raises(ValueError, match='prediction must be finite'):
+        evaluate_with_baseline(Nonfinite(), [sample()], torch.device('cpu'), 'temporal')
+
+
+def test_sample_ids_length_mismatch_rejected():
+    with pytest.raises(ValueError, match='sample_ids length'):
+        evaluate_with_baseline(FixedFill(), [sample()], torch.device('cpu'), 'temporal', sample_ids=['a', 'b'])
