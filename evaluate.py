@@ -21,6 +21,8 @@ def evaluate_with_baseline(model, loader, device, training, split='val', sample_
     returning a misleading score or a zero-valued mean-fill baseline.
     """
     model.eval()
+    if sample_ids is not None and hasattr(loader, '__len__') and len(sample_ids) != len(loader):
+        raise ValueError('sample_ids length must match evaluation loader length')
     model_abs = model_sq = original_abs = baseline_abs = baseline_sq = count = 0.0
     per_patch = []
     for index, (image, mask, target) in enumerate(loader):
@@ -30,6 +32,8 @@ def evaluate_with_baseline(model, loader, device, training, split='val', sample_
             raise ValueError(f'Sample {index} target shape must match image shape')
         if not torch.isfinite(mask).all() or not torch.all((mask == 0) | (mask == 1)):
             raise ValueError(f'Sample {index} mask must contain only finite binary values')
+        if not torch.isfinite(image).all() or not torch.isfinite(target).all():
+            raise ValueError(f'Sample {index} image and target must be finite')
         image, mask, target = [t.to(device) for t in (image, mask, target)]
         masked_pixels = float(mask.sum().item())
         clear_pixels = float((1 - mask).sum().item())
@@ -41,6 +45,8 @@ def evaluate_with_baseline(model, loader, device, training, split='val', sample_
         predicted = model(image, mask)
         if predicted.shape != target.shape:
             raise ValueError(f'Sample {index} prediction shape must match target shape')
+        if not torch.isfinite(predicted).all():
+            raise ValueError(f'Sample {index} prediction must be finite')
         model_error = (predicted - target) * mask
         baseline_error = (observed_mean - target) * mask
         original_error = (image - target) * mask
