@@ -26,6 +26,8 @@ def evaluate_with_baseline(model, loader, device, training, split='val', sample_
     model_abs = model_sq = original_abs = baseline_abs = baseline_sq = count = 0.0
     per_patch = []
     for index, (image, mask, target) in enumerate(loader):
+        if sample_ids is not None and index >= len(sample_ids):
+            raise ValueError('sample_ids length must match evaluation loader length')
         if image.ndim != 4 or image.shape[0] != 1 or mask.shape != image.shape[:1] + (1,) + image.shape[2:]:
             raise ValueError('Evaluation requires batch_size=1 and a [N,1,H,W] mask')
         if target.shape != image.shape:
@@ -69,6 +71,8 @@ def evaluate_with_baseline(model, loader, device, training, split='val', sample_
         })
     if not per_patch:
         raise ValueError('Cannot evaluate an empty dataset')
+    if sample_ids is not None and len(sample_ids) != len(per_patch):
+        raise ValueError('sample_ids length must match evaluation loader length')
     differences = np.array([r['model_minus_mean_fill_mae'] for r in per_patch])
     return {
         'masked_mae': model_abs / count,
