@@ -97,3 +97,22 @@ def test_nonfinite_prediction_rejected():
 def test_sample_ids_length_mismatch_rejected():
     with pytest.raises(ValueError, match='sample_ids length'):
         evaluate_with_baseline(FixedFill(), [sample()], torch.device('cpu'), 'temporal', sample_ids=['a', 'b'])
+
+
+def test_one_pass_loader_rejects_too_few_sample_ids():
+    class NoLength:
+        def __iter__(self):
+            yield sample()
+            yield sample()
+    with pytest.raises(ValueError, match='sample_ids length'):
+        evaluate_with_baseline(FixedFill(), NoLength(), torch.device('cpu'),
+                               'temporal', sample_ids=['first'])
+
+
+def test_one_pass_loader_rejects_extra_sample_ids():
+    class NoLength:
+        def __iter__(self):
+            yield sample()
+    with pytest.raises(ValueError, match='sample_ids length'):
+        evaluate_with_baseline(FixedFill(), NoLength(), torch.device('cpu'),
+                               'temporal', sample_ids=['first', 'extra'])
