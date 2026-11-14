@@ -7,6 +7,7 @@ import rasterio
 import torch
 from model import make_generator
 from train import choose_device
+from prediction_checks import validate_prediction_patch
 
 
 def main():
@@ -24,13 +25,9 @@ def main():
         if src.count != 6:
             raise ValueError('Expected prepared patch with B2,B3,B4,B5,QA_PIXEL,QA_RADSAT')
         dn, qa, sat = src.read([1, 2, 3, 4]), src.read(5), src.read(6)
-        if src.height % 8 or src.width % 8:
-            raise ValueError('Patch dimensions must be divisible by eight')
-        if np.any(qa & 1) or np.any(dn == 0) or np.any(sat & sum(1 << b for b in (1, 2, 3, 4, 11))):
-            raise ValueError('Patch contains invalid or saturated observations')
+        mask = validate_prediction_patch(dn, qa, sat)
         profile = src.profile.copy()
     image = dn.astype('float32') * .0000275 - .2
-    mask = ((qa & sum(1 << b for b in (1, 2, 3, 4))) != 0).astype('float32')
     with torch.no_grad():
         out = model(torch.from_numpy(image[None]).to(device),
                     torch.from_numpy(mask[None, None]).to(device)).cpu().numpy()[0]
