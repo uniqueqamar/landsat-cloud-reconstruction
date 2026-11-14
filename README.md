@@ -294,7 +294,6 @@ processing inputs; only the small extracted patches are included here.
 
 ## Sources and provenance
 
-- Original scene: your Drive files shared with Sahil on 29 September 2026;
   `source_MTL.txt` retains their acquisition/scaling metadata.
 - USGS search: `https://landsatlook.usgs.gov/stac-server`, collection
   `landsat-c2l2-sr`, path 141 / row 044.
