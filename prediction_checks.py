@@ -22,3 +22,16 @@ def validate_prediction_patch(dn, qa, saturation):
     if mask.all():
         raise ValueError('Entire patch is cloud/shadow: no clear optical context available')
     return mask.astype('float32')
+
+
+def validate_reconstruction_output(predicted, observed, mask):
+    """Reject malformed/nonfinite outputs and protect measured clear pixels."""
+    predicted, observed, mask = map(np.asarray, (predicted, observed, mask))
+    if (observed.ndim != 3 or observed.shape[0] != 4 or
+            predicted.shape != observed.shape or mask.shape != observed.shape[1:]):
+        raise ValueError('Prediction, observed bands, and cloud mask have incompatible shapes')
+    if not np.isfinite(predicted).all():
+        raise ValueError('Prediction contains nonfinite reflectance values')
+    if not np.array_equal(predicted[:, mask == 0], observed[:, mask == 0]):
+        raise ValueError('Prediction changed measured clear pixels')
+    return predicted
