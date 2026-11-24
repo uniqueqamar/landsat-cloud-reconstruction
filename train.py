@@ -3,6 +3,7 @@ import argparse
 import csv
 import json
 import random
+from collections import OrderedDict
 from pathlib import Path
 
 import numpy as np
@@ -46,11 +47,16 @@ class ClearPatches(Dataset):
 
 
 class TemporalPairs(Dataset):
-    def __init__(self, root, split, expanded=False, augment=False):
+    def __init__(self, root, split, expanded=False, augment=False,
+                 shard_cache_limit_bytes=256 * 1024 * 1024):
+        if shard_cache_limit_bytes < 0:
+            raise ValueError('shard_cache_limit_bytes must be non-negative')
         self.root = root
         self.augment = augment
         self.rng = np.random.default_rng(42)
-        self.shard_cache = {}
+        self.shard_cache = OrderedDict()
+        self.shard_cache_bytes = 0
+        self.shard_cache_limit_bytes = shard_cache_limit_bytes
         with (root / 'pairs.csv').open() as f:
             self.rows = [r for r in csv.DictReader(f) if r['split'] == split]
         if expanded:
@@ -64,17 +70,30 @@ class TemporalPairs(Dataset):
     def __len__(self):
         return len(self.rows)
 
+    def _get_shard(self, name):
+        """Cache recently used expanded shards up to a bounded RAM budget.
+
+        An oversized shard is decoded for the current sample but not retained.
+        npz decoding still requires transient memory for one complete shard.
+        """
+        if name in self.shard_cache:
+            self.shard_cache.move_to_end(name)
+            return self.shard_cache[name]
+        with np.load(self.root / name, allow_pickle=False) as z:
+            arrays = {k: z[k] for k in ['observed', 'target', 'qa_pixel']}
+        size = sum(array.nbytes for array in arrays.values())
+        if size <= self.shard_cache_limit_bytes:
+            while self.shard_cache and self.shard_cache_bytes + size > self.shard_cache_limit_bytes:
+                _, evicted = self.shard_cache.popitem(last=False)
+                self.shard_cache_bytes -= sum(array.nbytes for array in evicted.values())
+            self.shard_cache[name] = arrays
+            self.shard_cache_bytes += size
+        return arrays
+
     def __getitem__(self, i):
         row = self.rows[i]
         if 'shard' in row:
-            name = row['shard']
-            if name not in self.shard_cache:
-                with np.load(self.root / name, allow_pickle=False) as z:
-                    arrays = {k: z[k] for k in ['observed', 'target', 'qa_pixel']}
-                if len(self.shard_cache) >= 4:
-                    self.shard_cache.pop(next(iter(self.shard_cache)))
-                self.shard_cache[name] = arrays
-            z = self.shard_cache[name]; index = int(row['index'])
+            z = self._get_shard(row['shard']); index = int(row['index'])
             observed = z['observed'][index].astype('float32') * .0000275 - .2
             reference = z['target'][index].astype('float32') * .0000275 - .2
             qa = z['qa_pixel'][index]
