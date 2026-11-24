@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from prediction_checks import validate_prediction_patch
+from prediction_checks import validate_prediction_patch, validate_reconstruction_output
 
 
 def patch():
@@ -42,3 +42,37 @@ def test_invalid_dn_rejected():
     dn, qa, sat = patch(); qa[0, 0] = 1 << 3; dn[0, 0, 0] = 0
     with pytest.raises(ValueError, match='invalid'):
         validate_prediction_patch(dn, qa, sat)
+
+
+def output_sample():
+    observed = np.full((4, 8, 8), .1, dtype=np.float32)
+    mask = np.zeros((8, 8), dtype=np.float32)
+    mask[0, 0] = 1
+    predicted = observed.copy()
+    predicted[:, 0, 0] = .2
+    return predicted, observed, mask
+
+
+def test_valid_output_preserves_clear_pixels():
+    predicted, observed, mask = output_sample()
+    assert validate_reconstruction_output(predicted, observed, mask) is predicted
+
+
+def test_nonfinite_output_rejected():
+    predicted, observed, mask = output_sample()
+    predicted[:, 0, 0] = np.nan
+    with pytest.raises(ValueError, match='nonfinite'):
+        validate_reconstruction_output(predicted, observed, mask)
+
+
+def test_changed_clear_pixels_rejected():
+    predicted, observed, mask = output_sample()
+    predicted[:, 1, 1] = .2
+    with pytest.raises(ValueError, match='clear pixels'):
+        validate_reconstruction_output(predicted, observed, mask)
+
+
+def test_output_shape_mismatch_rejected():
+    predicted, observed, mask = output_sample()
+    with pytest.raises(ValueError, match='shapes'):
+        validate_reconstruction_output(predicted[:3], observed, mask)

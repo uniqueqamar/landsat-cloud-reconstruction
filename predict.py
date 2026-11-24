@@ -7,7 +7,7 @@ import rasterio
 import torch
 from model import make_generator
 from train import choose_device
-from prediction_checks import validate_prediction_patch
+from prediction_checks import validate_prediction_patch, validate_reconstruction_output
 
 
 def main():
@@ -31,6 +31,7 @@ def main():
     with torch.no_grad():
         out = model(torch.from_numpy(image[None]).to(device),
                     torch.from_numpy(mask[None, None]).to(device)).cpu().numpy()[0]
+    out = validate_reconstruction_output(out, image, mask)
     a.output.parent.mkdir(parents=True, exist_ok=True)
     profile.update(count=4, dtype='float32')
     with rasterio.open(a.output, 'w', **profile) as dst:
