@@ -1,11 +1,11 @@
 """Check the actual delivered rasters, split separation, and optional pair alignment."""
 import csv
 import json
-import hashlib
 from pathlib import Path
 from collections import defaultdict
 import numpy as np
 import rasterio
+from file_hash import sha256_file
 
 
 def validate(root):
@@ -43,7 +43,7 @@ def validate(root):
         coordinates=set()
         summary=json.loads((root/'expanded_train/summary.json').read_text())
         for name, digest in summary['shard_hashes'].items():
-            assert hashlib.sha256((root/'expanded_train'/name).read_bytes()).hexdigest()==digest
+            assert sha256_file(root/'expanded_train'/name)==digest
         for row in extra:
             coordinate=int(row['row']),int(row['col'])
             assert coordinate not in existing and coordinate not in coordinates
