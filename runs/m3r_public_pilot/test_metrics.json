@@ -1,0 +1,71 @@
+{
+  "mode": "paired_model_comparison",
+  "test_list": "M3M-CR/one_test_sample.csv",
+  "overall": {
+    "patches": 1,
+    "scored_pixels": 25993,
+    "optical_only": {
+      "masked_mae": 0.041313584446293995,
+      "masked_psnr_db": 26.55102851484034,
+      "masked_sam_deg": 16.55810234057485,
+      "masked_ndvi_mae": 0.21811652898971678
+    },
+    "sar_guided": {
+      "masked_mae": 0.0380403178219596,
+      "masked_psnr_db": 26.86828999596928,
+      "masked_sam_deg": 15.551914606895407,
+      "masked_ndvi_mae": 0.2035629773263175
+    }
+  },
+  "by_cloud_coverage": {
+    "(0,30%]": {
+      "patches": 1,
+      "scored_pixels": 25993,
+      "optical_only": {
+        "masked_mae": 0.041313584446293995,
+        "masked_psnr_db": 26.55102851484034,
+        "masked_sam_deg": 16.55810234057485,
+        "masked_ndvi_mae": 0.21811652898971678
+      },
+      "sar_guided": {
+        "masked_mae": 0.0380403178219596,
+        "masked_psnr_db": 26.86828999596928,
+        "masked_sam_deg": 15.551914606895407,
+        "masked_ndvi_mae": 0.2035629773263175
+      }
+    },
+    "(30%,50%]": {
+      "patches": 0,
+      "scored_pixels": 0,
+      "optical_only": null,
+      "sar_guided": null
+    },
+    "(50%,100%)": {
+      "patches": 0,
+      "scored_pixels": 0,
+      "optical_only": null,
+      "sar_guided": null
+    }
+  },
+  "patches": [
+    {
+      "patch_id": "planet_cloudfree_summer_33_p_1",
+      "cloud_fraction": 0.28881111111111113,
+      "patches": 1,
+      "scored_pixels": 25993,
+      "optical_only": {
+        "masked_mae": 0.041313584446293995,
+        "masked_psnr_db": 26.55102851484034,
+        "masked_sam_deg": 16.55810234057485,
+        "masked_ndvi_mae": 0.21811652898971678
+      },
+      "sar_guided": {
+        "masked_mae": 0.0380403178219596,
+        "masked_psnr_db": 26.86828999596928,
+        "masked_sam_deg": 15.551914606895407,
+        "masked_ndvi_mae": 0.2035629773263175
+      }
+    }
+  ],
+  "skipped": []
+}

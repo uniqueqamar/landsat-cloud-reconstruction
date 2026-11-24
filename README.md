@@ -65,7 +65,7 @@ To save a separate GAN reconstruction, repeat step 3 with `--weights runs/tempor
 
 Thick clouds hide the optical signal from the ground. These models see the surrounding clear pixels and have to guess what continues under the cloud. V2 often produces smooth patches, and the GAN can add colored edges or plausible-looking details in the wrong place. Small features are also hard to see at Landsat’s 30 m pixel size. The clearer reference was taken eight days later, so some differences may come from real changes on the ground.
 
-For better reconstruction, the next model would benefit from another observation of the same location, such as a nearby clear optical image or aligned Sentinel-1 radar. Radar can observe the ground through clouds and give the model additional evidence about hidden structures. The [M3R-CR comparison guide](M3R_COMPARISON.md) explains how to test whether radar improves the results once compatible model weights and held-out samples are available.
+For better reconstruction, the next model would benefit from another observation of the same location, such as a nearby clear optical image or aligned Sentinel-1 radar. Radar can observe the ground through clouds and give the model additional evidence about hidden structures. The [M3R-CR comparison guide](M3R_COMPARISON.md) includes two small pretrained models you can run on the public M3R-CR test example. A larger comparison needs additional held-out patches.
 
 ## More details
 
