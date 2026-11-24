@@ -1,7 +1,4 @@
-"""Independent spectral audit; use validation only during model development.
-
-This is a diagnostic, not evidence of geographic generalization.
-"""
+"""Compare reconstructed reflectance with a reference inside the cloud mask."""
 import argparse
 import json
 from pathlib import Path
@@ -10,49 +7,52 @@ import torch
 from torch.utils.data import DataLoader
 
 from model import make_generator
-from train import ClearPatches, TemporalPairs, choose_device
 from quality_metrics import MaskedQuality
+from spatial_fill import spatial_fill
+from train import ClearPatches, TemporalPairs, choose_device
 
 
-# Fractions refer to QA-masked area, not to cloud optical thickness.
-COVERAGE_LIMITS = (0.30, 0.50, 1.00)
+# Bounds describe the QA-masked fraction of a patch.
+COVERAGE_RANGES = ((0.0, 0.30), (0.30, 0.50), (0.50, 1.00))
 
 
 @torch.no_grad()
 def audit(model, loader, device, *, coverage_breakdown=False):
+    """Pool error across masked pixels and optionally group patches by coverage."""
     model.eval()
     methods = ['model', 'mean_fill']
     if coverage_breakdown:
-        from spatial_fill import spatial_fill
-
         methods += ['spatial_interpolation', 'cloudy_input']
-    overall = {name: MaskedQuality() for name in methods}
-    groups = [{name: MaskedQuality() for name in methods} for _ in COVERAGE_LIMITS]
-    counts = [0] * len(COVERAGE_LIMITS)
+    overall_scores = {name: MaskedQuality() for name in methods}
+    coverage_scores = [{name: MaskedQuality() for name in methods} for _ in COVERAGE_RANGES]
+    patch_counts = [0] * len(COVERAGE_RANGES)
     for observed, mask, target in loader:
-        observed, mask, target = (v.to(device) for v in (observed, mask, target))
-        valid = 1 - mask
-        mean = (observed * valid).sum((2, 3), keepdim=True) / valid.sum((2, 3), keepdim=True).clamp_min(1)
-        if torch.any(valid.sum((2, 3)) == 0):
+        observed, mask, target = (tensor.to(device) for tensor in (observed, mask, target))
+        clear = 1 - mask
+        clear_count = clear.sum((2, 3), keepdim=True)
+        if torch.any(clear_count == 0):
             raise ValueError('Cannot compute observed-pixel mean fill: sample has no clear pixels')
-        predictions = {'model': model(observed, mask), 'mean_fill': observed * valid + mean * mask}
+        clear_mean = (observed * clear).sum((2, 3), keepdim=True) / clear_count.clamp_min(1)
+        predictions = {'model': model(observed, mask), 'mean_fill': observed * clear + clear_mean * mask}
         if coverage_breakdown:
             predictions['spatial_interpolation'] = spatial_fill(observed, mask)
             predictions['cloudy_input'] = observed
-        masks, references = mask.cpu().numpy(), target.cpu().numpy()
-        predictions = {name: value.cpu().numpy() for name, value in predictions.items()}
+        masks = mask.detach().cpu().numpy()
+        references = target.detach().cpu().numpy()
+        predictions = {name: value.detach().cpu().numpy() for name, value in predictions.items()}
         for index, (patch_mask, reference) in enumerate(zip(masks, references)):
             if not patch_mask.any():
                 continue
             if coverage_breakdown:
-                fraction = int(patch_mask.sum()) / patch_mask.size
-                group = next(i for i, limit in enumerate(COVERAGE_LIMITS) if fraction <= limit)
-                counts[group] += 1
-            for name, batches in predictions.items():
-                overall[name].add(batches[index], reference, patch_mask)
+                masked_fraction = int(patch_mask.sum()) / patch_mask.size
+                group_index = next(i for i, (_, upper) in enumerate(COVERAGE_RANGES)
+                                   if masked_fraction <= upper)
+                patch_counts[group_index] += 1
+            for name, batch in predictions.items():
+                overall_scores[name].add(batch[index], reference, patch_mask)
                 if coverage_breakdown:
-                    groups[group][name].add(batches[index], reference, patch_mask)
-    result = {name: quality.result() for name, quality in overall.items()}
+                    coverage_scores[group_index][name].add(batch[index], reference, patch_mask)
+    result = {name: quality.result() for name, quality in overall_scores.items()}
     result['reference_caveat'] = 'Temporal reference is a later observation, not simultaneous ground truth.'
     if coverage_breakdown:
         result['coverage_groups'] = [
@@ -62,7 +62,7 @@ def audit(model, loader, device, *, coverage_breakdown=False):
                 'patch_count': count,
                 'metrics': {name: quality.result() for name, quality in scores.items()} if count else None,
             }
-            for lower, upper, count, scores in zip((0.0, *COVERAGE_LIMITS[:-1]), COVERAGE_LIMITS, counts, groups)
+            for (lower, upper), count, scores in zip(COVERAGE_RANGES, patch_counts, coverage_scores)
         ]
     return result
 
