@@ -27,3 +27,23 @@ def test_partly_clear_patch_scores():
     scores = audit(IdentityModel(), [(observed, mask, target)], torch.device('cpu'))
     assert scores['model']['masked_mae'] == 0
     assert scores['mean_fill']['masked_mae'] == 0
+
+
+def test_coverage_groups_share_the_same_mask_and_report_empty_groups():
+    target = torch.full((3, 4, 2, 5), 0.25)
+    mask = torch.zeros((3, 1, 2, 5))
+    mask[0].view(-1)[:3] = 1
+    mask[1].view(-1)[:5] = 1
+    observed = target + 0.25 * mask
+
+    scores = audit(IdentityModel(), [(observed, mask, target)], torch.device('cpu'),
+                   coverage_breakdown=True)
+    low, medium, high = scores['coverage_groups']
+    assert [low['patch_count'], medium['patch_count'], high['patch_count']] == [1, 1, 0]
+    assert high['metrics'] is None
+    for method, expected_error in [('model', .25), ('mean_fill', 0),
+                                   ('cloudy_input', .25), ('spatial_interpolation', 0)]:
+        assert scores[method]['masked_pixel_count'] == 8
+        assert low['metrics'][method]['masked_pixel_count'] == 3
+        assert medium['metrics'][method]['masked_pixel_count'] == 5
+        assert scores[method]['masked_mae'] == expected_error

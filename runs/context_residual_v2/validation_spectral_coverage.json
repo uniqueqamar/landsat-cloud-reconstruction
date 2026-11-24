@@ -1,0 +1,284 @@
+{
+  "model": {
+    "masked_mae": 0.016666240545858108,
+    "masked_rmse": 0.027786079076381028,
+    "masked_psnr_unit_range_db": 31.123454653247457,
+    "per_band_masked_mae": {
+      "B2": 0.006307186695063421,
+      "B3": 0.011228563466800434,
+      "B4": 0.014486173720206713,
+      "B5": 0.03464303830136187
+    },
+    "masked_sam_degrees": 3.528432547151319,
+    "masked_ndvi_mae": 0.06992362352621606,
+    "masked_pixel_count": 64581,
+    "sam_valid_pixel_count": 64581,
+    "ndvi_valid_pixel_count": 64581
+  },
+  "mean_fill": {
+    "masked_mae": 0.017539599561541688,
+    "masked_rmse": 0.02920098294842019,
+    "masked_psnr_unit_range_db": 30.69205058617551,
+    "per_band_masked_mae": {
+      "B2": 0.006099493494201522,
+      "B3": 0.012641748090903489,
+      "B4": 0.014201136854993369,
+      "B5": 0.03721601980606837
+    },
+    "masked_sam_degrees": 3.8740780545045572,
+    "masked_ndvi_mae": 0.0709154146106942,
+    "masked_pixel_count": 64581,
+    "sam_valid_pixel_count": 64581,
+    "ndvi_valid_pixel_count": 64581
+  },
+  "spatial_interpolation": {
+    "masked_mae": 0.0183295073146726,
+    "masked_rmse": 0.0301520467913188,
+    "masked_psnr_unit_range_db": 30.413664031999627,
+    "per_band_masked_mae": {
+      "B2": 0.006359767746653467,
+      "B3": 0.012959455565224716,
+      "B4": 0.013919715687619986,
+      "B5": 0.04007909025919223
+    },
+    "masked_sam_degrees": 3.7875709851055785,
+    "masked_ndvi_mae": 0.06751087265054112,
+    "masked_pixel_count": 64581,
+    "sam_valid_pixel_count": 64581,
+    "ndvi_valid_pixel_count": 64581
+  },
+  "cloudy_input": {
+    "masked_mae": 0.06879888533718363,
+    "masked_rmse": 0.11306634359533803,
+    "masked_psnr_unit_range_db": 18.933333041384113,
+    "per_band_masked_mae": {
+      "B2": 0.056257486693987134,
+      "B3": 0.06315730784226065,
+      "B4": 0.06508143268993648,
+      "B5": 0.09069931412255029
+    },
+    "masked_sam_degrees": 9.980380939435655,
+    "masked_ndvi_mae": 0.15773259794597408,
+    "masked_pixel_count": 64581,
+    "sam_valid_pixel_count": 64581,
+    "ndvi_valid_pixel_count": 64581
+  },
+  "reference_caveat": "Temporal reference is a later observation, not simultaneous ground truth.",
+  "coverage_groups": [
+    {
+      "masked_fraction_lower_exclusive": 0.0,
+      "masked_fraction_upper_inclusive": 0.3,
+      "patch_count": 3,
+      "metrics": {
+        "model": {
+          "masked_mae": 0.017087283044056684,
+          "masked_rmse": 0.025448119377082978,
+          "masked_psnr_unit_range_db": 31.886886132425367,
+          "per_band_masked_mae": {
+            "B2": 0.007349431954736105,
+            "B3": 0.012905124515584608,
+            "B4": 0.017631024251514586,
+            "B5": 0.030463551454391443
+          },
+          "masked_sam_degrees": 4.248579178086467,
+          "masked_ndvi_mae": 0.08239148973411935,
+          "masked_pixel_count": 12247,
+          "sam_valid_pixel_count": 12247,
+          "ndvi_valid_pixel_count": 12247
+        },
+        "mean_fill": {
+          "masked_mae": 0.01653628177101157,
+          "masked_rmse": 0.0248682333943078,
+          "masked_psnr_unit_range_db": 32.08710130654705,
+          "per_band_masked_mae": {
+            "B2": 0.007298420323055161,
+            "B3": 0.011184123989352502,
+            "B4": 0.01751156289909454,
+            "B5": 0.030151019872544083
+          },
+          "masked_sam_degrees": 4.160788400338008,
+          "masked_ndvi_mae": 0.08334865015995123,
+          "masked_pixel_count": 12247,
+          "sam_valid_pixel_count": 12247,
+          "ndvi_valid_pixel_count": 12247
+        },
+        "spatial_interpolation": {
+          "masked_mae": 0.018406404861268003,
+          "masked_rmse": 0.027989289789683316,
+          "masked_psnr_unit_range_db": 31.060162426771598,
+          "per_band_masked_mae": {
+            "B2": 0.007620570563027658,
+            "B3": 0.013137090256457583,
+            "B4": 0.016829887686556307,
+            "B5": 0.03603807093903046
+          },
+          "masked_sam_degrees": 3.9058050095103845,
+          "masked_ndvi_mae": 0.07659045941212715,
+          "masked_pixel_count": 12247,
+          "sam_valid_pixel_count": 12247,
+          "ndvi_valid_pixel_count": 12247
+        },
+        "cloudy_input": {
+          "masked_mae": 0.07520646329644,
+          "masked_rmse": 0.11537196579591494,
+          "masked_psnr_unit_range_db": 18.757994149295715,
+          "per_band_masked_mae": {
+            "B2": 0.05622226347327184,
+            "B3": 0.06835224301856693,
+            "B4": 0.07007695791686692,
+            "B5": 0.10617438877705429
+          },
+          "masked_sam_degrees": 9.312875047121645,
+          "masked_ndvi_mae": 0.14804358294794015,
+          "masked_pixel_count": 12247,
+          "sam_valid_pixel_count": 12247,
+          "ndvi_valid_pixel_count": 12247
+        }
+      }
+    },
+    {
+      "masked_fraction_lower_exclusive": 0.3,
+      "masked_fraction_upper_inclusive": 0.5,
+      "patch_count": 3,
+      "metrics": {
+        "model": {
+          "masked_mae": 0.015897489331253727,
+          "masked_rmse": 0.026352526345347637,
+          "masked_psnr_unit_range_db": 31.58355487639078,
+          "per_band_masked_mae": {
+            "B2": 0.0051247405984845,
+            "B3": 0.010682748199915075,
+            "B4": 0.011901508716487263,
+            "B5": 0.035880959810128066
+          },
+          "masked_sam_degrees": 2.6542046245270248,
+          "masked_ndvi_mae": 0.05320690093134357,
+          "masked_pixel_count": 22301,
+          "sam_valid_pixel_count": 22301,
+          "ndvi_valid_pixel_count": 22301
+        },
+        "mean_fill": {
+          "masked_mae": 0.017130113675054296,
+          "masked_rmse": 0.02778601437186364,
+          "masked_psnr_unit_range_db": 31.12347487981307,
+          "per_band_masked_mae": {
+            "B2": 0.005032967078392962,
+            "B3": 0.013191819943353673,
+            "B4": 0.011875597308305693,
+            "B5": 0.03842007037016486
+          },
+          "masked_sam_degrees": 3.150932898181161,
+          "masked_ndvi_mae": 0.05375263409861106,
+          "masked_pixel_count": 22301,
+          "sam_valid_pixel_count": 22301,
+          "ndvi_valid_pixel_count": 22301
+        },
+        "spatial_interpolation": {
+          "masked_mae": 0.017970934238591245,
+          "masked_rmse": 0.029526363340587822,
+          "masked_psnr_unit_range_db": 30.595800805618655,
+          "per_band_masked_mae": {
+            "B2": 0.0052666897017564895,
+            "B3": 0.012663797779713428,
+            "B4": 0.011500884862153523,
+            "B5": 0.04245236461074153
+          },
+          "masked_sam_degrees": 3.085168898409068,
+          "masked_ndvi_mae": 0.05047923116711322,
+          "masked_pixel_count": 22301,
+          "sam_valid_pixel_count": 22301,
+          "ndvi_valid_pixel_count": 22301
+        },
+        "cloudy_input": {
+          "masked_mae": 0.06438429694211655,
+          "masked_rmse": 0.10641874699274366,
+          "masked_psnr_unit_range_db": 19.459637177976134,
+          "per_band_masked_mae": {
+            "B2": 0.05168808297189457,
+            "B3": 0.06006410164040015,
+            "B4": 0.05981284667211212,
+            "B5": 0.08597215648405937
+          },
+          "masked_sam_degrees": 9.680146131580873,
+          "masked_ndvi_mae": 0.1492355676186457,
+          "masked_pixel_count": 22301,
+          "sam_valid_pixel_count": 22301,
+          "ndvi_valid_pixel_count": 22301
+        }
+      }
+    },
+    {
+      "masked_fraction_lower_exclusive": 0.5,
+      "masked_fraction_upper_inclusive": 1.0,
+      "patch_count": 3,
+      "metrics": {
+        "model": {
+          "masked_mae": 0.017065381935711083,
+          "masked_rmse": 0.0296723531680929,
+          "masked_psnr_unit_range_db": 30.552960211247896,
+          "per_band_masked_mae": {
+            "B2": 0.006760200137097023,
+            "B3": 0.010950182455990677,
+            "B4": 0.015122994210701169,
+            "B5": 0.035428150939055464
+          },
+          "masked_sam_degrees": 3.8839255419697407,
+          "masked_ndvi_mae": 0.07725241762404378,
+          "masked_pixel_count": 30033,
+          "sam_valid_pixel_count": 30033,
+          "ndvi_valid_pixel_count": 30033
+        },
+        "mean_fill": {
+          "masked_mae": 0.018252800964504347,
+          "masked_rmse": 0.03175065112964386,
+          "masked_psnr_unit_range_db": 29.964947278865797,
+          "per_band_masked_mae": {
+            "B2": 0.006402538435631821,
+            "B3": 0.012827689221999396,
+            "B4": 0.014578024600758854,
+            "B5": 0.03920295159962732
+          },
+          "masked_sam_degrees": 4.294133277950292,
+          "masked_ndvi_mae": 0.0785895508084838,
+          "masked_pixel_count": 30033,
+          "sam_valid_pixel_count": 30033,
+          "ndvi_valid_pixel_count": 30033
+        },
+        "spatial_interpolation": {
+          "masked_mae": 0.018564408054410102,
+          "masked_rmse": 0.031434848780205284,
+          "masked_psnr_unit_range_db": 30.051772490325735,
+          "per_band_masked_mae": {
+            "B2": 0.006657296511249504,
+            "B3": 0.013106559491278,
+            "B4": 0.01452909436333518,
+            "B5": 0.03996468185177773
+          },
+          "masked_sam_degrees": 4.260925523064932,
+          "masked_ndvi_mae": 0.07645519848055414,
+          "masked_pixel_count": 30033,
+          "sam_valid_pixel_count": 30033,
+          "ndvi_valid_pixel_count": 30033
+        },
+        "cloudy_input": {
+          "masked_mae": 0.069464024635002,
+          "masked_rmse": 0.11684449941939255,
+          "masked_psnr_unit_range_db": 18.647834553416867,
+          "per_band_masked_mae": {
+            "B2": 0.05966486028938175,
+            "B3": 0.06333575223354583,
+            "B4": 0.06695652140332789,
+            "B5": 0.08789896461375248
+          },
+          "masked_sam_degrees": 10.475518991349855,
+          "masked_ndvi_mae": 0.1679930993947362,
+          "masked_pixel_count": 30033,
+          "sam_valid_pixel_count": 30033,
+          "ndvi_valid_pixel_count": 30033
+        }
+      }
+    }
+  ],
+  "split": "val",
+  "sample_count": 9
+}

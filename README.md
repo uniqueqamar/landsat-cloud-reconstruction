@@ -98,6 +98,46 @@ optical context alone. A clearer image eight days later remains a proxy target,
 and the current single-scene dataset has no SAR. Smooth-looking generated regions
 are estimates, not measurements. The project is still an experimental prototype.
 
+## Optical baseline for the SAR-guided minor project
+
+This repository provides the optical-only stage of the team's cloud reconstruction
+project. It operates on the native 30 m Landsat grid. The team's Align-CR stage
+uses 3 m PlanetScope optical imagery and Sentinel-1 SAR from M3R-CR, with a learned
+alignment step before fusion. The Landsat data and checkpoint can establish an
+optical baseline here. The radar contribution must be measured on a common dataset.
+
+The validation audit applies the same cloud/shadow mask to the model, cloudy
+input, per-band mean fill, and 128-step spatial interpolation. It reports MAE,
+PSNR, per-band error, spectral angle (SAM), and NDVI error. Patch groups are
+based on the fraction masked (up to 30%, over 30% through 50%, and over 50%).
+These groups measure cloud/shadow **coverage**, which is distinct from opacity.
+
+```bash
+python spectral_audit.py --weights runs/context_residual_v2/best.pt \
+  --split val --coverage-breakdown --output outputs/v2_spectral_coverage.json
+```
+
+| Method | Masked MAE ↓ | SAM ↓ | NDVI MAE ↓ |
+| --- | ---: | ---: | ---: |
+| Original cloudy input | 0.06880 | 9.98° | 0.15773 |
+| Observed-pixel mean fill | 0.01754 | 3.87° | 0.07091 |
+| Spatial interpolation | 0.01833 | 3.79° | **0.06751** |
+| Context-Residual v2 | **0.01667** | **3.53°** | 0.06992 |
+
+The [recorded validation audit](runs/context_residual_v2/validation_spectral_coverage.json)
+uses three patches per coverage group from one Landsat scene. V2 had the lowest
+pooled reflectance MAE and spectral angle. Mean fill had the lowest reflectance
+MAE in the lowest-coverage group, and interpolation had the lowest pooled NDVI
+error. The later clear observation is an eight-day proxy, so its NDVI can reflect
+actual vegetation changes.
+
+For the SAR experiment, evaluate a trained optical-only baseline and the
+optical-plus-SAR model on the same held-out M3R-CR sites, using identical
+reference grids, masks, and scoring rules. Compare partially cloudy patches
+first. Evaluate fully cloudy patches separately, since the Landsat baseline
+requires observed clear pixels. Land-cover mIoU requires compatible reference
+labels and a fixed evaluation pipeline.
+
 ## What has actually been completed
 
 - Retrieved your Landsat 9 scene `LC09_L2SP_141044_20260927_20260928_02_T1` from the Drive links in your email.
