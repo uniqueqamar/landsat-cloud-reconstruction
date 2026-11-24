@@ -50,12 +50,8 @@ def validate(root):
             assert split_for(coordinate[0]//128,coordinate[1]//128)=='train'
             assert row['split']=='train'
             coordinates.add(coordinate)
-            with np.load(root/row['shard'],allow_pickle=False) as z:
-                i=int(row['index'])
-                assert z['observed'][i].shape==z['target'][i].shape==(4,128,128)
-                assert z['observed'].dtype==z['target'].dtype==np.uint16
-                assert np.all(z['observed'][i]!=0) and np.all(z['target'][i]!=0)
-                assert not np.any(z['qa_pixel'][i]&33)
+        from expanded_shard_validation import validate_shard_rows
+        validate_shard_rows(root, extra)
         print(f'PASS: {len(extra)} extra training pairs; hashes, shapes, validity, no split overlap')
 
 
