@@ -61,6 +61,52 @@ V2 starts by filling the cloudy area with average colors from visible pixels, th
 
 To save a separate GAN reconstruction, repeat step 3 with `--weights runs/temporal_cgan/best.pt` and `--output outputs/gan_prediction.tif`. Then open `outputs/gan_prediction.png`.
 
+## Try the SRGAN-style model
+
+This version uses residual blocks and subpixel upsampling, inspired by
+[SRGAN](https://doi.org/10.1109/CVPR.2017.19). It upsamples internal features
+back to the original 30 m Landsat grid and preserves observed pixels.
+Training uses masked four-band L1 loss and an image-only adversarial loss.
+The input and output use the same spatial resolution.
+
+```bash
+python predict.py \
+  --weights runs/temporal_srgan/best.pt \
+  --input data/cloudy/val/r04608_c02176.tif \
+  --output outputs/srgan_prediction.tif
+open outputs/srgan_prediction.png
+```
+
+On the same ten Landsat test patches, using the same cloud and shadow masks
+and the same eight-day-later reference, the scores were:
+
+| Method | Masked MAE ↓ | PSNR ↑ | Spectral angle ↓ | NDVI MAE ↓ |
+| --- | ---: | ---: | ---: | ---: |
+| Original conditional GAN | 0.02380 | 28.40 dB | 6.09° | 0.10877 |
+| Mean fill | 0.01824 | 30.53 dB | 4.18° | 0.08115 |
+| SRGAN-style | 0.01687 | 30.97 dB | 4.03° | 0.08123 |
+| V2 | **0.01666** | **31.04 dB** | **3.99°** | **0.08059** |
+
+SRGAN-style training used the original cGAN's 22 training pairs, with batch
+size 1 and two reconstruction-only warm-up epochs. Epoch 9 had the lowest
+masked MAE on the nine validation patches among adversarial epochs. V2 used
+118 training pairs, so the comparison with V2 also reflects different
+training set sizes. The SRGAN-style run used Linux CPU. Mac runtime and memory
+were not measured.
+
+[Validation preview](runs/temporal_srgan/comparison.png) ·
+[Test scores by coverage](runs/temporal_srgan/test_metrics.json) ·
+[Training history](runs/temporal_srgan/history.json)
+
+To retrain and score the same split:
+
+```bash
+python train.py --task temporal --architecture srgan --epochs 10 \
+  --gan-weight 0.005 --warmup 2 --output outputs/srgan_run
+python spectral_audit.py --weights outputs/srgan_run/best.pt --split test \
+  --coverage-breakdown --output outputs/srgan_test_metrics.json
+```
+
 ## Why the filled areas can look wrong
 
 Thick clouds hide the optical signal from the ground. These models see the surrounding clear pixels and have to guess what continues under the cloud. V2 often produces smooth patches, and the GAN can add colored edges or plausible-looking details in the wrong place. Small features are also hard to see at Landsat’s 30 m pixel size. The clearer reference was taken eight days later, so some differences may come from real changes on the ground.

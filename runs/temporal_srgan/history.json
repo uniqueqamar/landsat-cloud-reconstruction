@@ -1,0 +1,92 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 0.01483911093832417,
+    "masked_mae": 0.017358395814862405,
+    "masked_psnr_unit_range_db": 30.831686185245463,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 2,
+    "train_loss": 0.013812011933292855,
+    "masked_mae": 0.016809397492023554,
+    "masked_psnr_unit_range_db": 31.041553326846497,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 3,
+    "train_loss": 0.01703718270767819,
+    "masked_mae": 0.017187248864729648,
+    "masked_psnr_unit_range_db": 30.969361645099976,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 4,
+    "train_loss": 0.01696618887680498,
+    "masked_mae": 0.01699661300011081,
+    "masked_psnr_unit_range_db": 31.004370078324584,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 5,
+    "train_loss": 0.01695753816007213,
+    "masked_mae": 0.017243127998161495,
+    "masked_psnr_unit_range_db": 30.961182338077396,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 6,
+    "train_loss": 0.016904757146469572,
+    "masked_mae": 0.017018513087269704,
+    "masked_psnr_unit_range_db": 31.001862828903946,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 7,
+    "train_loss": 0.016958849208260126,
+    "masked_mae": 0.017199409574529135,
+    "masked_psnr_unit_range_db": 30.970602945430908,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 8,
+    "train_loss": 0.01693842907182195,
+    "masked_mae": 0.016909405810840987,
+    "masked_psnr_unit_range_db": 31.02823284478815,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 9,
+    "train_loss": 0.017002774529497732,
+    "masked_mae": 0.016762375785456807,
+    "masked_psnr_unit_range_db": 31.05901001351823,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 10,
+    "train_loss": 0.016928634733300318,
+    "masked_mae": 0.017087853557916095,
+    "masked_psnr_unit_range_db": 31.00313775443886,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  }
+]

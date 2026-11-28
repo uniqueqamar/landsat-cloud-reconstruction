@@ -11,7 +11,7 @@ import rasterio
 import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
-from model import Generator, ContextResidualGenerator, Discriminator
+from model import Discriminator, make_generator
 
 
 def synthetic_mask(height, width, rng):
@@ -164,19 +164,26 @@ def main():
     p.add_argument('--gan-weight', type=float, default=0.)
     p.add_argument('--warmup', type=int, default=2)
     p.add_argument('--task', choices=['synthetic', 'temporal'], default='synthetic')
-    p.add_argument('--architecture', choices=['legacy', 'context_residual_v2'], default='legacy')
+    p.add_argument('--architecture', choices=['legacy', 'context_residual_v2', 'srgan'], default='legacy')
     p.add_argument('--expanded-train', action='store_true')
     p.add_argument('--augment', action='store_true')
     p.add_argument('--learning-rate', type=float, default=2e-4)
     p.add_argument('--max-steps', type=int, default=0, help='Smoke test only; 0 means full run')
     a = p.parse_args()
+    if a.architecture == 'srgan':
+        if a.gan_weight <= 0 or not 0 <= a.warmup < a.epochs:
+            p.error('SRGAN requires positive --gan-weight and at least one adversarial epoch')
+        if a.max_steps and a.warmup:
+            p.error('Use --warmup 0 for a step-limited SRGAN smoke test')
     random.seed(42)
     np.random.seed(42)
     torch.manual_seed(42)
     torch.set_num_threads(2)
     device = choose_device()
-    model = (ContextResidualGenerator() if a.architecture == 'context_residual_v2' else Generator()).to(device)
-    discriminator = Discriminator().to(device) if a.gan_weight else None
+    model = make_generator({'architecture': a.architecture, 'width': 16}).to(device)
+    discriminator = None
+    if a.gan_weight:
+        discriminator = Discriminator(conditional=a.architecture != 'srgan').to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=a.learning_rate)
     d_optimizer = torch.optim.Adam(discriminator.parameters(), lr=1e-4) if discriminator else None
     bce = nn.BCEWithLogitsLoss()
@@ -239,7 +246,8 @@ def main():
                           expanded_train=a.expanded_train, augment=a.augment,
                           learning_rate=a.learning_rate)
         torch.save(checkpoint, a.output / 'last.pt')
-        if scores['masked_mae'] < best:
+        eligible = a.architecture != 'srgan' or epoch >= a.warmup
+        if eligible and scores['masked_mae'] < best:
             best = scores['masked_mae']
             torch.save(checkpoint, a.output / 'best.pt')
         (a.output / 'history.json').write_text(json.dumps(history, indent=2))

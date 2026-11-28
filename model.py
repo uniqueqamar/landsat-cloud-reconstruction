@@ -57,22 +57,70 @@ class ContextResidualGenerator(Generator):
         return image * valid + candidate * mask
 
 
+class SRResidualBlock(nn.Module):
+    def __init__(self, width):
+        super().__init__()
+        self.body = nn.Sequential(
+            nn.Conv2d(width, width, 3, padding=1),
+            nn.PReLU(width),
+            nn.Conv2d(width, width, 3, padding=1),
+        )
+
+    def forward(self, features):
+        return features + self.body(features)
+
+
+class SRGANGenerator(nn.Module):
+    """Use an SRGAN-style residual trunk and 2× subpixel feature upsampler."""
+
+    def __init__(self, width=16):
+        super().__init__()
+        self.entry = nn.Sequential(nn.Conv2d(5, width, 5, padding=2), nn.PReLU(width))
+        self.trunk = nn.Sequential(*(SRResidualBlock(width) for _ in range(4)))
+        self.skip = nn.Conv2d(width, width, 3, padding=1)
+        self.upsample = nn.Sequential(
+            nn.Conv2d(width, width * 4, 3, padding=1),
+            nn.PixelShuffle(2),
+            nn.PReLU(width),
+        )
+        self.head = nn.Conv2d(width, 4, 3, padding=1)
+        nn.init.zeros_(self.head.weight)
+        nn.init.zeros_(self.head.bias)
+
+    def forward(self, image, mask):
+        visible = 1 - mask
+        mean = (image * visible).sum((2, 3), keepdim=True) / visible.sum((2, 3), keepdim=True).clamp_min(1)
+        centered = (image - mean) * visible / .1
+        context = torch.cat([centered, mask], dim=1)
+        height, width = image.shape[-2:]
+        context = F.pad(context, (0, width % 2, 0, height % 2), mode='replicate')
+        features = self.entry(F.avg_pool2d(context, 2))
+        features = features + self.skip(self.trunk(features))
+        correction = .05 * torch.tanh(self.head(self.upsample(features))[:, :, :height, :width])
+        return torch.where(mask.bool(), mean + correction, image)
+
+
 def make_generator(checkpoint):
     architecture = checkpoint.get('architecture', 'legacy')
     if architecture == 'legacy':
         return Generator(checkpoint['width'])
     if architecture == 'context_residual_v2':
         return ContextResidualGenerator(checkpoint['width'])
+    if architecture == 'srgan':
+        return SRGANGenerator(checkpoint['width'])
     raise ValueError(f'Unknown generator architecture: {architecture}')
 
 
 class Discriminator(nn.Module):
-    def __init__(self):
+    def __init__(self, *, conditional=True):
         super().__init__()
-        self.net = nn.Sequential(nn.Conv2d(9, 16, 4, 2, 1), nn.LeakyReLU(.2),
+        self.conditional = conditional
+        self.net = nn.Sequential(nn.Conv2d(9 if conditional else 4, 16, 4, 2, 1), nn.LeakyReLU(.2),
                                  nn.Conv2d(16, 32, 4, 2, 1), nn.LeakyReLU(.2),
                                  nn.Conv2d(32, 64, 4, 2, 1), nn.LeakyReLU(.2),
                                  nn.Conv2d(64, 1, 3, padding=1))
 
     def forward(self, observed, mask, candidate):
-        return self.net(torch.cat([observed, mask, candidate], 1))
+        if self.conditional:
+            candidate = torch.cat([observed, mask, candidate], 1)
+        return self.net(candidate)
