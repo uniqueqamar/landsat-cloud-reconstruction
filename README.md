@@ -2,6 +2,15 @@
 
 This project fills cloud and shadow areas in small Landsat satellite images. It uses a quality mask to find the covered pixels and keeps the visible pixels unchanged. The filled areas are estimates of what might be underneath. Start with the included 128 × 128 pixel example.
 
+## Map flooding through clouds with radar
+
+For disaster monitoring, this project now compares two Sentinel-1 radar
+acquisitions and maps measured darkening. The Porto Alegre example uses a radar
+pass during the May 2024 flood and compares the result against a published
+flood extent. The outputs include a dated change map, a stricter open-water
+candidate layer, and explicit unknown pixels for gaps in radar coverage.
+[See the example and run instructions](runs/radar_porto_alegre/README.md).
+
 ## Try it in your browser
 
 [Open Landsat Cloud Lab](https://landsat-cloud-lab-qam.snowywren64.chatgpt.site) to run the V2 model on an included example. Turn on the mask overlay to see which pixels the model filled. The hosted demo requires owner access. If you can’t open it, use the Mac steps below.

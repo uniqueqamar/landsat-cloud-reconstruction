@@ -1,0 +1,39 @@
+{
+  "before_time_utc": "2023-11-25T08:49:46.038313+00:00",
+  "event_time_utc": "2024-05-11T08:49:55.541452+00:00",
+  "relative_orbit": 24,
+  "polarization": "VV",
+  "before_input": "before.tif",
+  "event_input": "after.tif",
+  "dark_db": -17,
+  "minimum_drop_db": 3,
+  "darkening_pixels": 97588,
+  "class_pixels": {
+    "no open-water candidate": 181578,
+    "new darkening candidate": 39591,
+    "already-dark surface": 28431,
+    "unknown": 0
+  },
+  "candidate_grid_area_km2": 35.42925036550323,
+  "reference_comparison": {
+    "reference_time_utc": "2024-05-10T22:00:00+00:00",
+    "delta_hours": 10.832094847777777,
+    "scored_pixels": 164804,
+    "darkening_only": {
+      "true_positive_pixels": 42541,
+      "false_positive_pixels": 16003,
+      "false_negative_pixels": 61242,
+      "precision": 0.7266500409948073,
+      "recall": 0.4099033560409701,
+      "iou": 0.35514166931026997
+    },
+    "candidate_map": {
+      "true_positive_pixels": 13473,
+      "false_positive_pixels": 7344,
+      "false_negative_pixels": 90310,
+      "precision": 0.6472114137483788,
+      "recall": 0.12981894915352224,
+      "iou": 0.12123966272822986
+    }
+  }
+}
