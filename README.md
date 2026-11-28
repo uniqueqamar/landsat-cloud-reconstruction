@@ -184,6 +184,34 @@ validation sweep and paired test scores on CPU.
 [Before and after preview](runs/edge_blend/comparison.png) ·
 [Full test scores](runs/edge_blend/test.json)
 
+## Does the model recover hidden ground detail?
+
+We evaluated 27,425 masked interior pixels across the ten Landsat test patches.
+Each scored pixel has a fully masked 9 × 9 neighborhood. We ran two checks:
+the real cloudy input against the eight-day-later reference, and a controlled
+test where we applied the same cloud mask to the clear reference itself.
+In the controlled test, the model only sees observed values outside the mask.
+The hidden values from that same image provide the answer for scoring.
+
+| Comparison | Mean fill MAE ↓ | Spatial fill MAE ↓ | SRGAN with edge blend MAE ↓ |
+| --- | ---: | ---: | ---: |
+| Real cloud interior vs. later reference | 0.01867 | 0.01878 | **0.01698** |
+| Known ground hidden in the clear image | 0.01719 | **0.01634** | 0.01756 |
+
+The model produced gradients with only about 3% of the reference RMS amplitude
+in the controlled test. Its signed gradient similarity was 0.004 on a scale where 1
+means perfect alignment and 0 means no alignment. This shows that the smooth
+interiors lack the reference's texture, even when average reflectance is close.
+Treat masked output values as estimates and use the exported `.mask.npy` file
+to distinguish them from observed ground. The two checks use the same test
+locations, so the controlled test does not add independent sites.
+
+[Controlled-test preview](runs/ground_detail/comparison.png) ·
+[Full interior scores](runs/ground_detail/scores.json)
+
+Reproduce the CPU audit with
+`python evaluate_ground_detail.py --output outputs/ground_detail`.
+
 ## Why the filled areas can look wrong
 
 Thick clouds hide the optical signal from the ground. These models see the surrounding clear pixels and have to guess what continues under the cloud. V2 often produces smooth patches, and the GAN can add colored edges or plausible-looking details in the wrong place. Small features are also hard to see at Landsat’s 30 m pixel size. The clearer reference was taken eight days later, so some differences may come from real changes on the ground.

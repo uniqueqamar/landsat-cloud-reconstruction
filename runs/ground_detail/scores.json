@@ -1,0 +1,211 @@
+{
+  "split": "test",
+  "patches": 10,
+  "masked_neighborhood_width": 9,
+  "experiments": {
+    "real_cloud": {
+      "mean_fill": {
+        "interior_reflectance": {
+          "masked_mae": 0.01866655229384533,
+          "masked_rmse": 0.030500002530110235,
+          "masked_psnr_unit_range_db": 30.31400249253125,
+          "per_band_masked_mae": {
+            "B2": 0.006631329260501627,
+            "B3": 0.0128261170159336,
+            "B4": 0.01646816706823129,
+            "B5": 0.0387405958307148
+          },
+          "masked_sam_degrees": 4.3255843579272995,
+          "masked_ndvi_mae": 0.08455431072764719,
+          "masked_pixel_count": 27425,
+          "sam_valid_pixel_count": 27425,
+          "ndvi_valid_pixel_count": 27425
+        },
+        "interior_detail": {
+          "gradient_values": 206680,
+          "gradient_mae": 0.008551826071731699,
+          "zero_gradient_baseline_mae": 0.008551826071731699,
+          "gradient_cosine": null,
+          "gradient_rms_ratio": 0.0
+        }
+      },
+      "spatial_fill": {
+        "interior_reflectance": {
+          "masked_mae": 0.018782328206047402,
+          "masked_rmse": 0.030734267125356204,
+          "masked_psnr_unit_range_db": 30.247542767965786,
+          "per_band_masked_mae": {
+            "B2": 0.006541513532821222,
+            "B3": 0.013017038339876325,
+            "B4": 0.01597048879892259,
+            "B5": 0.03960027215256948
+          },
+          "masked_sam_degrees": 4.236762050590856,
+          "masked_ndvi_mae": 0.08142338034553404,
+          "masked_pixel_count": 27425,
+          "sam_valid_pixel_count": 27425,
+          "ndvi_valid_pixel_count": 27425
+        },
+        "interior_detail": {
+          "gradient_values": 206680,
+          "gradient_mae": 0.00856791041414368,
+          "zero_gradient_baseline_mae": 0.008551826071731699,
+          "gradient_cosine": 0.023459289262111948,
+          "gradient_rms_ratio": 0.05732840812639298
+        }
+      },
+      "srgan": {
+        "interior_reflectance": {
+          "masked_mae": 0.01700191372037681,
+          "masked_rmse": 0.028638891257475756,
+          "masked_psnr_unit_range_db": 30.860875991306646,
+          "per_band_masked_mae": {
+            "B2": 0.006633765489447084,
+            "B3": 0.011070502232369663,
+            "B4": 0.01645125018295203,
+            "B5": 0.033852136976738466
+          },
+          "masked_sam_degrees": 4.16048632180697,
+          "masked_ndvi_mae": 0.08441174129342353,
+          "masked_pixel_count": 27425,
+          "sam_valid_pixel_count": 27425,
+          "ndvi_valid_pixel_count": 27425
+        },
+        "interior_detail": {
+          "gradient_values": 206680,
+          "gradient_mae": 0.008551539095558077,
+          "zero_gradient_baseline_mae": 0.008551826071731699,
+          "gradient_cosine": 0.011448686119271521,
+          "gradient_rms_ratio": 0.01788511660147357
+        }
+      },
+      "srgan_blended": {
+        "interior_reflectance": {
+          "masked_mae": 0.01698393736021048,
+          "masked_rmse": 0.0286081194711961,
+          "masked_psnr_unit_range_db": 30.87021378421256,
+          "per_band_masked_mae": {
+            "B2": 0.0065798184909979214,
+            "B3": 0.01104136907684879,
+            "B4": 0.016266041092146716,
+            "B5": 0.0340485207808485
+          },
+          "masked_sam_degrees": 4.120730367796156,
+          "masked_ndvi_mae": 0.08338981149778259,
+          "masked_pixel_count": 27425,
+          "sam_valid_pixel_count": 27425,
+          "ndvi_valid_pixel_count": 27425
+        },
+        "interior_detail": {
+          "gradient_values": 206680,
+          "gradient_mae": 0.008559894918308934,
+          "zero_gradient_baseline_mae": 0.008551826071731699,
+          "gradient_cosine": 0.007498286291672531,
+          "gradient_rms_ratio": 0.03913026965710347
+        }
+      }
+    },
+    "known_ground_hidden": {
+      "mean_fill": {
+        "interior_reflectance": {
+          "masked_mae": 0.017188625674076724,
+          "masked_rmse": 0.027677861186661493,
+          "masked_psnr_unit_range_db": 31.157349462571005,
+          "per_band_masked_mae": {
+            "B2": 0.006916400725081386,
+            "B3": 0.01150348654487183,
+            "B4": 0.016680403614082222,
+            "B5": 0.03365421181227146
+          },
+          "masked_sam_degrees": 4.127080819603461,
+          "masked_ndvi_mae": 0.08333107737103049,
+          "masked_pixel_count": 27425,
+          "sam_valid_pixel_count": 27425,
+          "ndvi_valid_pixel_count": 27425
+        },
+        "interior_detail": {
+          "gradient_values": 206680,
+          "gradient_mae": 0.008551826071731699,
+          "zero_gradient_baseline_mae": 0.008551826071731699,
+          "gradient_cosine": null,
+          "gradient_rms_ratio": 0.0
+        }
+      },
+      "spatial_fill": {
+        "interior_reflectance": {
+          "masked_mae": 0.016336343032626287,
+          "masked_rmse": 0.026879372250041257,
+          "masked_psnr_unit_range_db": 31.41161756320249,
+          "per_band_masked_mae": {
+            "B2": 0.006446115291230007,
+            "B3": 0.010674527723107863,
+            "B4": 0.015579981273320337,
+            "B5": 0.03264474784284694
+          },
+          "masked_sam_degrees": 3.87411054579132,
+          "masked_ndvi_mae": 0.07811946450550476,
+          "masked_pixel_count": 27425,
+          "sam_valid_pixel_count": 27425,
+          "ndvi_valid_pixel_count": 27425
+        },
+        "interior_detail": {
+          "gradient_values": 206680,
+          "gradient_mae": 0.008549944547969125,
+          "zero_gradient_baseline_mae": 0.008551826071731699,
+          "gradient_cosine": 0.029502020798632598,
+          "gradient_rms_ratio": 0.04131542195151678
+        }
+      },
+      "srgan": {
+        "interior_reflectance": {
+          "masked_mae": 0.018214516417686247,
+          "masked_rmse": 0.02924494157838052,
+          "masked_psnr_unit_range_db": 30.67898483750048,
+          "per_band_masked_mae": {
+            "B2": 0.0069254070845048,
+            "B3": 0.012270258892066064,
+            "B4": 0.016504199771633338,
+            "B5": 0.03715819992254078
+          },
+          "masked_sam_degrees": 4.513736905332836,
+          "masked_ndvi_mae": 0.08950477027453405,
+          "masked_pixel_count": 27425,
+          "sam_valid_pixel_count": 27425,
+          "ndvi_valid_pixel_count": 27425
+        },
+        "interior_detail": {
+          "gradient_values": 206680,
+          "gradient_mae": 0.00855181615298406,
+          "zero_gradient_baseline_mae": 0.008551826071731699,
+          "gradient_cosine": 0.003772857923935532,
+          "gradient_rms_ratio": 0.014819407122303275
+        }
+      },
+      "srgan_blended": {
+        "interior_reflectance": {
+          "masked_mae": 0.017563003972733058,
+          "masked_rmse": 0.028510589293634894,
+          "masked_psnr_unit_range_db": 30.899876120784548,
+          "per_band_masked_mae": {
+            "B2": 0.006784819456304652,
+            "B3": 0.01156028812813998,
+            "B4": 0.016203948632493928,
+            "B5": 0.03570295967399368
+          },
+          "masked_sam_degrees": 4.337447616543648,
+          "masked_ndvi_mae": 0.08666996048420976,
+          "masked_pixel_count": 27425,
+          "sam_valid_pixel_count": 27425,
+          "ndvi_valid_pixel_count": 27425
+        },
+        "interior_detail": {
+          "gradient_values": 206680,
+          "gradient_mae": 0.008554101906720788,
+          "zero_gradient_baseline_mae": 0.008551826071731699,
+          "gradient_cosine": 0.0038799959948732352,
+          "gradient_rms_ratio": 0.03029729155157599
+        }
+      }
+    }
+  }
+}
