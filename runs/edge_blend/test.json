@@ -1,0 +1,86 @@
+{
+  "split": "test",
+  "patches": 10,
+  "selected": [
+    16,
+    0.5
+  ],
+  "results": {
+    "srgan:0:0": {
+      "masked_mae": 0.016684788667061082,
+      "masked_rmse": 0.027940206896429252,
+      "masked_psnr_unit_range_db": 31.0754076454354,
+      "per_band_masked_mae": {
+        "B2": 0.00648454202511166,
+        "B3": 0.010906356182508459,
+        "B4": 0.015788106824078052,
+        "B5": 0.03356014963654616
+      },
+      "masked_sam_degrees": 4.006720435036895,
+      "masked_ndvi_mae": 0.08066387132659439,
+      "masked_pixel_count": 60269,
+      "sam_valid_pixel_count": 60269,
+      "ndvi_valid_pixel_count": 60269,
+      "boundary_gradient_mae": 0.021739236945919126,
+      "mean_boundary_jump": 0.02047170904672851,
+      "boundary_band_value_count": 31852
+    },
+    "srgan:16:0.5": {
+      "masked_mae": 0.016472626161971215,
+      "masked_rmse": 0.027457718376673903,
+      "masked_psnr_unit_range_db": 31.226711073659615,
+      "per_band_masked_mae": {
+        "B2": 0.006290654802523731,
+        "B3": 0.010928147734628227,
+        "B4": 0.015088147974963058,
+        "B5": 0.03358355413576984
+      },
+      "masked_sam_degrees": 3.8662311950595383,
+      "masked_ndvi_mae": 0.07672575729640387,
+      "masked_pixel_count": 60269,
+      "sam_valid_pixel_count": 60269,
+      "ndvi_valid_pixel_count": 60269,
+      "boundary_gradient_mae": 0.01487569405956812,
+      "mean_boundary_jump": 0.012939723011358411,
+      "boundary_band_value_count": 31852
+    },
+    "v2:0:0": {
+      "masked_mae": 0.01666019501690073,
+      "masked_rmse": 0.028050598152864932,
+      "masked_psnr_unit_range_db": 31.04115746767951,
+      "per_band_masked_mae": {
+        "B2": 0.006448594432163277,
+        "B3": 0.010795530735852748,
+        "B4": 0.015758899334385387,
+        "B5": 0.033637755565201516
+      },
+      "masked_sam_degrees": 3.9930734843019664,
+      "masked_ndvi_mae": 0.08059134211575585,
+      "masked_pixel_count": 60269,
+      "sam_valid_pixel_count": 60269,
+      "ndvi_valid_pixel_count": 60269,
+      "boundary_gradient_mae": 0.022131259187178353,
+      "mean_boundary_jump": 0.02088653725414858,
+      "boundary_band_value_count": 31852
+    },
+    "v2:16:0.5": {
+      "masked_mae": 0.016462489609723633,
+      "masked_rmse": 0.027549040850929594,
+      "masked_psnr_unit_range_db": 31.197870339438033,
+      "per_band_masked_mae": {
+        "B2": 0.006303501902117686,
+        "B3": 0.01070585299817499,
+        "B4": 0.015105301564952983,
+        "B5": 0.03373530197364888
+      },
+      "masked_sam_degrees": 3.8356907013744816,
+      "masked_ndvi_mae": 0.0768435050151859,
+      "masked_pixel_count": 60269,
+      "sam_valid_pixel_count": 60269,
+      "ndvi_valid_pixel_count": 60269,
+      "boundary_gradient_mae": 0.014976096066430961,
+      "mean_boundary_jump": 0.013050056201465822,
+      "boundary_band_value_count": 31852
+    }
+  }
+}

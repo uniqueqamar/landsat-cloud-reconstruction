@@ -147,6 +147,43 @@ python spectral_audit.py --weights outputs/cloud_srgan/best.pt --split test \
 Omit `--cloud-balance` to train the matched control.
 [Weights, full scores, and preview](runs/srgan_cloud_types).
 
+## Reduce visible patch edges
+
+Add `--blend-edges` to a prediction command to soften the transition.
+Near the cloud boundary, the prediction is blended with reflectance
+interpolated from visible pixels. The blend fades over 16 pixels measured
+inward from the boundary, with at most 50% interpolation weight. Every
+observed clear pixel is copied exactly. The filter uses the cloudy input,
+its mask, and the saved model prediction, so it needs no new weights.
+
+```bash
+python predict.py --weights runs/srgan_cloud_types/control.pt \
+  --input data/cloudy/val/r04608_c02176.tif \
+  --output outputs/srgan_blended.tif --blend-edges
+open outputs/srgan_blended.png
+```
+
+We selected the setting with the lowest aggregate reflectance MAE for SRGAN
+among eight blends on the nine validation patches. We then tested the same
+fixed setting on ten Landsat patches, using the same reference grids and masks.
+Boundary error measures how much the reflectance change across the mask edge
+differs from the change on that same edge in the later clear reference.
+
+| Expanded SRGAN | Boundary-gradient MAE ↓ | Masked MAE ↓ | Masked NDVI MAE ↓ |
+| --- | ---: | ---: | ---: |
+| Plain prediction | 0.02174 | 0.01668 | 0.08066 |
+| With edge blend | 0.01488 | 0.01647 | 0.07673 |
+
+The reference was taken eight days later and all test patches come from one
+scene. The blend softens transitions using available context. Large cloud
+interiors still lack observed ground detail. The reference is used to score
+the outputs and the filter can run on the Mac without a reference image.
+
+`python evaluate_edge_blend.py --output outputs/edge_audit` reproduces the
+validation sweep and paired test scores on CPU.
+[Before and after preview](runs/edge_blend/comparison.png) ·
+[Full test scores](runs/edge_blend/test.json)
+
 ## Why the filled areas can look wrong
 
 Thick clouds hide the optical signal from the ground. These models see the surrounding clear pixels and have to guess what continues under the cloud. V2 often produces smooth patches, and the GAN can add colored edges or plausible-looking details in the wrong place. Small features are also hard to see at Landsat’s 30 m pixel size. The clearer reference was taken eight days later, so some differences may come from real changes on the ground.

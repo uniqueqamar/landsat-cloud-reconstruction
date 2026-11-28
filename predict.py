@@ -6,6 +6,7 @@ from PIL import Image
 import rasterio
 import torch
 from model import make_generator
+from edge_blend import edge_blend
 from train import choose_device
 from prediction_checks import validate_prediction_patch, validate_reconstruction_output
 
@@ -15,6 +16,7 @@ def main():
     p.add_argument('--weights', type=Path, required=True)
     p.add_argument('--input', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
+    p.add_argument('--blend-edges', action='store_true', help='Blend toward visible context inside cloud boundaries')
     a = p.parse_args()
     device = choose_device()
     checkpoint = torch.load(a.weights, map_location='cpu', weights_only=True)
@@ -29,8 +31,12 @@ def main():
         profile = src.profile.copy()
     image = dn.astype('float32') * .0000275 - .2
     with torch.no_grad():
-        out = model(torch.from_numpy(image[None]).to(device),
-                    torch.from_numpy(mask[None, None]).to(device)).cpu().numpy()[0]
+        observed = torch.from_numpy(image[None]).to(device)
+        cloud_mask = torch.from_numpy(mask[None, None]).to(device)
+        prediction = model(observed, cloud_mask)
+        if a.blend_edges:
+            prediction = edge_blend(observed, cloud_mask, prediction, width=16, strength=.5)
+        out = prediction.cpu().numpy()[0]
     out = validate_reconstruction_output(out, image, mask)
     a.output.parent.mkdir(parents=True, exist_ok=True)
     profile.update(count=4, dtype='float32')
@@ -38,6 +44,8 @@ def main():
         dst.write(out)
         for i, band in enumerate(['blue', 'green', 'red', 'nir'], 1):
             dst.set_band_description(i, band + '_estimated_surface_reflectance')
+        if a.blend_edges:
+            dst.update_tags(edge_blend='16-pixel interior taper, 0.5 maximum interpolation weight')
         dst.update_tags(method=f'{checkpoint["training"]}-trained generator; experimental reconstruction',
                         architecture=checkpoint.get('architecture', 'legacy'),
                         mask_source='QA_PIXEL cloud/cirrus/dilated cloud/shadow',
