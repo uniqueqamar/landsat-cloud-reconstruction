@@ -1,0 +1,74 @@
+[
+  {
+    "epoch": 1,
+    "steps": 59,
+    "adversarial_steps": 0,
+    "training_mae": 0.023013607062146824,
+    "training_gradient_mae": 0.004675114725645379,
+    "training_adversarial_loss": 0.0,
+    "validation_mae": 0.033300282107166054
+  },
+  {
+    "epoch": 2,
+    "steps": 59,
+    "adversarial_steps": 0,
+    "training_mae": 0.022876110227810123,
+    "training_gradient_mae": 0.004593500573487984,
+    "training_adversarial_loss": 0.0,
+    "validation_mae": 0.029923284796286108
+  },
+  {
+    "epoch": 3,
+    "steps": 59,
+    "adversarial_steps": 59,
+    "training_mae": 0.0235668501453632,
+    "training_gradient_mae": 0.004607498816459172,
+    "training_adversarial_loss": 0.6942393597909959,
+    "validation_mae": 0.032627880646546106
+  },
+  {
+    "epoch": 4,
+    "steps": 59,
+    "adversarial_steps": 118,
+    "training_mae": 0.023202286283406665,
+    "training_gradient_mae": 0.004616159177187957,
+    "training_adversarial_loss": 0.6923933645426217,
+    "validation_mae": 0.031011736830821268
+  },
+  {
+    "epoch": 5,
+    "steps": 59,
+    "adversarial_steps": 177,
+    "training_mae": 0.02191026985519013,
+    "training_gradient_mae": 0.004519778021642843,
+    "training_adversarial_loss": 0.6927618263131481,
+    "validation_mae": 0.031778800757953383
+  },
+  {
+    "epoch": 6,
+    "steps": 59,
+    "adversarial_steps": 236,
+    "training_mae": 0.022175028209842868,
+    "training_gradient_mae": 0.004531304860069274,
+    "training_adversarial_loss": 0.6953984640412412,
+    "validation_mae": 0.03175045865926927
+  },
+  {
+    "epoch": 7,
+    "steps": 59,
+    "adversarial_steps": 295,
+    "training_mae": 0.022562809012261993,
+    "training_gradient_mae": 0.004677442137262453,
+    "training_adversarial_loss": 0.6959330540592388,
+    "validation_mae": 0.03264774973531789
+  },
+  {
+    "epoch": 8,
+    "steps": 59,
+    "adversarial_steps": 354,
+    "training_mae": 0.022263009479995502,
+    "training_gradient_mae": 0.0045486133164820905,
+    "training_adversarial_loss": 0.7109894085738618,
+    "validation_mae": 0.029965904270075266
+  }
+]

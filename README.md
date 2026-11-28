@@ -11,6 +11,15 @@ flood extent. The outputs include a dated change map, a stricter open-water
 candidate layer, and explicit unknown pixels for gaps in radar coverage.
 [See the example and run instructions](runs/radar_porto_alegre/README.md).
 
+## Try multimodal cloud reconstruction with radar
+
+The project includes a compact SAR-guided GAN trained on the public M3R-CR
+example and on a separate scene-disjoint SEN12MS-CR pilot. It produces
+four-band optical estimates and preserves measured clear pixels. The run
+includes optical-only GAN controls, simple mean fill, and scores that check
+whether the model recovers detail inside the cloud mask.
+[Weights, previews, results, and instructions](runs/multimodal_gan/README.md).
+
 ## Try it in your browser
 
 [Open Landsat Cloud Lab](https://landsat-cloud-lab-qam.snowywren64.chatgpt.site) to run the V2 model on an included example. Turn on the mask overlay to see which pixels the model filled. The hosted demo requires owner access. If you can’t open it, use the Mac steps below.

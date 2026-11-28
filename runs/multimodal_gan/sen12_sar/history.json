@@ -1,0 +1,74 @@
+[
+  {
+    "epoch": 1,
+    "steps": 59,
+    "adversarial_steps": 0,
+    "training_mae": 0.02298699122837792,
+    "training_gradient_mae": 0.0046759905408026055,
+    "training_adversarial_loss": 0.0,
+    "validation_mae": 0.033375414414225237
+  },
+  {
+    "epoch": 2,
+    "steps": 59,
+    "adversarial_steps": 0,
+    "training_mae": 0.022875849275960255,
+    "training_gradient_mae": 0.004590486389411203,
+    "training_adversarial_loss": 0.0,
+    "validation_mae": 0.030024542126784466
+  },
+  {
+    "epoch": 3,
+    "steps": 59,
+    "adversarial_steps": 59,
+    "training_mae": 0.02356654089102048,
+    "training_gradient_mae": 0.0046053635414247795,
+    "training_adversarial_loss": 0.6935550267413512,
+    "validation_mae": 0.03279175062988828
+  },
+  {
+    "epoch": 4,
+    "steps": 59,
+    "adversarial_steps": 118,
+    "training_mae": 0.02319085288603427,
+    "training_gradient_mae": 0.004615130602437371,
+    "training_adversarial_loss": 0.6919450113328837,
+    "validation_mae": 0.031181219190501066
+  },
+  {
+    "epoch": 5,
+    "steps": 59,
+    "adversarial_steps": 177,
+    "training_mae": 0.02188712856495532,
+    "training_gradient_mae": 0.004520470655318034,
+    "training_adversarial_loss": 0.691083163528119,
+    "validation_mae": 0.032057903756340024
+  },
+  {
+    "epoch": 6,
+    "steps": 59,
+    "adversarial_steps": 236,
+    "training_mae": 0.022140545944162343,
+    "training_gradient_mae": 0.004532595133503615,
+    "training_adversarial_loss": 0.6959009615041442,
+    "validation_mae": 0.032121382785584816
+  },
+  {
+    "epoch": 7,
+    "steps": 59,
+    "adversarial_steps": 295,
+    "training_mae": 0.022510647205478053,
+    "training_gradient_mae": 0.004680559606393957,
+    "training_adversarial_loss": 0.6972264425229218,
+    "validation_mae": 0.03314094054953517
+  },
+  {
+    "epoch": 8,
+    "steps": 59,
+    "adversarial_steps": 354,
+    "training_mae": 0.022226095136444447,
+    "training_gradient_mae": 0.004555644505949281,
+    "training_adversarial_loss": 0.7006881226927547,
+    "validation_mae": 0.030723424606891633
+  }
+]

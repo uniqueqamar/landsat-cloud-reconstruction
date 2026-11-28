@@ -1,0 +1,56 @@
+[
+  {
+    "epoch": 1,
+    "steps": 30,
+    "adversarial_steps": 0,
+    "training_mae": 0.058434282677869,
+    "training_gradient_mae": 0.004323513247072697,
+    "training_adversarial_loss": 0.0,
+    "validation_mae": null
+  },
+  {
+    "epoch": 2,
+    "steps": 30,
+    "adversarial_steps": 0,
+    "training_mae": 0.031786726353069145,
+    "training_gradient_mae": 0.004167368030175566,
+    "training_adversarial_loss": 0.0,
+    "validation_mae": null
+  },
+  {
+    "epoch": 3,
+    "steps": 30,
+    "adversarial_steps": 30,
+    "training_mae": 0.03041783645749092,
+    "training_gradient_mae": 0.004231693417144318,
+    "training_adversarial_loss": 0.693877899646759,
+    "validation_mae": null
+  },
+  {
+    "epoch": 4,
+    "steps": 30,
+    "adversarial_steps": 60,
+    "training_mae": 0.033491440055270986,
+    "training_gradient_mae": 0.004442830492431919,
+    "training_adversarial_loss": 0.6912294348080953,
+    "validation_mae": null
+  },
+  {
+    "epoch": 5,
+    "steps": 30,
+    "adversarial_steps": 90,
+    "training_mae": 0.0312777228653431,
+    "training_gradient_mae": 0.004325252003036439,
+    "training_adversarial_loss": 0.6939558466275533,
+    "validation_mae": null
+  },
+  {
+    "epoch": 6,
+    "steps": 30,
+    "adversarial_steps": 120,
+    "training_mae": 0.03153319830695788,
+    "training_gradient_mae": 0.004445690382272005,
+    "training_adversarial_loss": 0.696085798740387,
+    "validation_mae": null
+  }
+]

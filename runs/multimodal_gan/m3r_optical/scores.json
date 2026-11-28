@@ -1,0 +1,60 @@
+{
+  "dataset": "m3r",
+  "sar_guided": false,
+  "selected_epoch": 6,
+  "adversarial_steps_at_checkpoint": 120,
+  "test_patches": [
+    "planet_cloudfree_summer_33_p_1"
+  ],
+  "all_four_bands_absolute_tolerance": 0.02,
+  "results": {
+    "gan": {
+      "masked_mae": 0.037821826856215816,
+      "masked_rmse": 0.04190676321931769,
+      "masked_psnr_unit_range_db": 27.55431763527977,
+      "per_band_masked_mae": {
+        "B2": 0.027606139085325252,
+        "B3": 0.04078199742412423,
+        "B4": 0.02354997567262347,
+        "B5": 0.05934919524279031
+      },
+      "masked_sam_degrees": 16.12868435719201,
+      "masked_ndvi_mae": 0.20217500106524466,
+      "masked_pixel_count": 25993,
+      "sam_valid_pixel_count": 25993,
+      "ndvi_valid_pixel_count": 25993,
+      "fraction_within_tolerance": 0.00019235948139883816,
+      "interior_detail": {
+        "gradient_values": 179368,
+        "gradient_mae": 0.0024474800259169315,
+        "zero_gradient_baseline_mae": 0.0024420794183351384,
+        "gradient_cosine": -0.003242541719071579,
+        "gradient_rms_ratio": 0.036681326193715835
+      }
+    },
+    "mean_fill": {
+      "masked_mae": 0.04306362592857038,
+      "masked_rmse": 0.045260207494317306,
+      "masked_psnr_unit_range_db": 26.885669187285338,
+      "per_band_masked_mae": {
+        "B2": 0.03431905988190785,
+        "B3": 0.04232112620551424,
+        "B4": 0.040206360745095426,
+        "B5": 0.055407956881764
+      },
+      "masked_sam_degrees": 7.943501729218284,
+      "masked_ndvi_mae": 0.08438490449392615,
+      "masked_pixel_count": 25993,
+      "sam_valid_pixel_count": 25993,
+      "ndvi_valid_pixel_count": 25993,
+      "fraction_within_tolerance": 0.0,
+      "interior_detail": {
+        "gradient_values": 179368,
+        "gradient_mae": 0.0024420794183351384,
+        "zero_gradient_baseline_mae": 0.0024420794183351384,
+        "gradient_cosine": null,
+        "gradient_rms_ratio": 0.0
+      }
+    }
+  }
+}

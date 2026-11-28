@@ -1,0 +1,153 @@
+{
+  "dataset": "sen12",
+  "sar_guided": false,
+  "selected_epoch": 8,
+  "adversarial_steps_at_checkpoint": 354,
+  "test_patches": [
+    "fall_139_p94",
+    "fall_139_p95",
+    "fall_139_p96",
+    "fall_139_p97",
+    "fall_139_p99",
+    "spring_31_p84",
+    "spring_31_p840",
+    "spring_31_p85",
+    "spring_31_p86",
+    "spring_31_p88",
+    "spring_31_p90",
+    "spring_31_p91",
+    "spring_31_p92",
+    "spring_31_p93",
+    "spring_31_p94",
+    "spring_31_p95",
+    "spring_31_p96",
+    "spring_31_p97",
+    "spring_31_p98",
+    "spring_31_p99"
+  ],
+  "all_four_bands_absolute_tolerance": 0.02,
+  "results": {
+    "gan": {
+      "masked_mae": 0.023981107764910845,
+      "masked_rmse": 0.03662724098700298,
+      "masked_psnr_unit_range_db": 28.723915882372857,
+      "per_band_masked_mae": {
+        "B2": 0.012645412567099907,
+        "B3": 0.007475012851606974,
+        "B4": 0.014221220795748401,
+        "B5": 0.0615827848451881
+      },
+      "masked_sam_degrees": 9.339351392653743,
+      "masked_ndvi_mae": 0.13979594812742424,
+      "masked_pixel_count": 538737,
+      "sam_valid_pixel_count": 538737,
+      "ndvi_valid_pixel_count": 538737,
+      "fraction_within_tolerance": 0.06626238776991371,
+      "interior_detail": {
+        "gradient_values": 3157000,
+        "gradient_mae": 0.004319306864099041,
+        "zero_gradient_baseline_mae": 0.004319095032495536,
+        "gradient_cosine": 0.0020229741598785313,
+        "gradient_rms_ratio": 0.0038392696536731917
+      }
+    },
+    "mean_fill": {
+      "masked_mae": 0.018641855301584014,
+      "masked_rmse": 0.027372336216770335,
+      "masked_psnr_unit_range_db": 31.253762683326528,
+      "per_band_masked_mae": {
+        "B2": 0.009194888457932418,
+        "B3": 0.009846131963243092,
+        "B4": 0.014236616198744794,
+        "B5": 0.041289784586415745
+      },
+      "masked_sam_degrees": 5.890227903132523,
+      "masked_ndvi_mae": 0.114101871680612,
+      "masked_pixel_count": 538737,
+      "sam_valid_pixel_count": 538737,
+      "ndvi_valid_pixel_count": 538737,
+      "fraction_within_tolerance": 0.18623187195236265,
+      "interior_detail": {
+        "gradient_values": 3157000,
+        "gradient_mae": 0.004319095032495536,
+        "zero_gradient_baseline_mae": 0.004319095032495536,
+        "gradient_cosine": null,
+        "gradient_rms_ratio": 0.0
+      }
+    }
+  },
+  "by_scene": {
+    "fall_139": {
+      "gan": {
+        "masked_mae": 0.030536297706127053,
+        "masked_rmse": 0.04242433359648661,
+        "masked_psnr_unit_range_db": 27.4476994175147,
+        "per_band_masked_mae": {
+          "B2": 0.018788876169911387,
+          "B3": 0.009526120918600507,
+          "B4": 0.02169893997989645,
+          "B5": 0.07213125375609987
+        },
+        "masked_sam_degrees": 13.980660731138085,
+        "masked_ndvi_mae": 0.24199330797121293,
+        "masked_pixel_count": 285499,
+        "sam_valid_pixel_count": 285499,
+        "ndvi_valid_pixel_count": 285499,
+        "fraction_within_tolerance": 0.009113867299009804
+      },
+      "mean_fill": {
+        "masked_mae": 0.020212202934563415,
+        "masked_rmse": 0.03116070615881571,
+        "masked_psnr_unit_range_db": 30.12785417955172,
+        "per_band_masked_mae": {
+          "B2": 0.004980278084073751,
+          "B3": 0.007077992150929296,
+          "B4": 0.018838473872763738,
+          "B5": 0.049952067630486874
+        },
+        "masked_sam_degrees": 9.063890358599583,
+        "masked_ndvi_mae": 0.18632815617448795,
+        "masked_pixel_count": 285499,
+        "sam_valid_pixel_count": 285499,
+        "ndvi_valid_pixel_count": 285499,
+        "fraction_within_tolerance": 0.03473217069061538
+      }
+    },
+    "spring_31": {
+      "gan": {
+        "masked_mae": 0.01659082600219243,
+        "masked_rmse": 0.028721154706786,
+        "masked_psnr_unit_range_db": 30.83596207361952,
+        "per_band_masked_mae": {
+          "B2": 0.005719308605059949,
+          "B3": 0.005162605937879227,
+          "B4": 0.005790885106179366,
+          "B5": 0.04969050435965117
+        },
+        "masked_sam_degrees": 4.106767124779483,
+        "masked_ndvi_mae": 0.024579258538808567,
+        "masked_pixel_count": 253238,
+        "sam_valid_pixel_count": 253238,
+        "ndvi_valid_pixel_count": 253238,
+        "fraction_within_tolerance": 0.1306912864577986
+      },
+      "mean_fill": {
+        "masked_mae": 0.016871454813237135,
+        "masked_rmse": 0.02234392565719499,
+        "masked_psnr_unit_range_db": 33.0168104458221,
+        "per_band_masked_mae": {
+          "B2": 0.013946414876267249,
+          "B3": 0.012966916159437094,
+          "B4": 0.009048509500402781,
+          "B5": 0.03152397871684142
+        },
+        "masked_sam_degrees": 2.3122599150209786,
+        "masked_ndvi_mae": 0.03267439240531724,
+        "masked_pixel_count": 253238,
+        "sam_valid_pixel_count": 253238,
+        "ndvi_valid_pixel_count": 253238,
+        "fraction_within_tolerance": 0.3570317250965495
+      }
+    }
+  }
+}
