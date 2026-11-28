@@ -1,0 +1,44 @@
+{
+  "before_time_utc": "2023-11-25T08:49:46.038313Z",
+  "event_time_utc": "2024-05-11T08:49:55.541452Z",
+  "reference_time_utc": "2024-05-10T22:00:00Z",
+  "relative_orbit": 24,
+  "minimum_drop_db": 3,
+  "common_valid_pixels": 249600,
+  "scored_pixels": 164804,
+  "reference_flood_pixels": 103783,
+  "methods": {
+    "vv": {
+      "true_positive_pixels": 42541,
+      "false_positive_pixels": 16003,
+      "false_negative_pixels": 61242,
+      "precision": 0.7266500409948073,
+      "recall": 0.4099033560409701,
+      "iou": 0.35514166931026997
+    },
+    "vh": {
+      "true_positive_pixels": 34056,
+      "false_positive_pixels": 4200,
+      "false_negative_pixels": 69727,
+      "precision": 0.8902132998745295,
+      "recall": 0.3281462281876608,
+      "iou": 0.3153829769500755
+    },
+    "either": {
+      "true_positive_pixels": 49123,
+      "false_positive_pixels": 18056,
+      "false_negative_pixels": 54660,
+      "precision": 0.7312255317882076,
+      "recall": 0.4733241475000723,
+      "iou": 0.40317960587332463
+    },
+    "both": {
+      "true_positive_pixels": 27474,
+      "false_positive_pixels": 2147,
+      "false_negative_pixels": 76309,
+      "precision": 0.927517639512508,
+      "recall": 0.26472543672855864,
+      "iou": 0.25935995468705747
+    }
+  }
+}

@@ -37,12 +37,16 @@ def download(url, destination):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--both-bands', action='store_true', help='Also download the VH crops')
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     for name, item in SCENES.items():
         endpoint = f'https://planetarycomputer.microsoft.com/api/data/v1/item/bbox/{WINDOW}/520x480.tif'
-        query = urlencode(dict(collection='sentinel-1-rtc', item=item, assets='vv', dst_crs='EPSG:32722'))
-        download(f'{endpoint}?{query}', args.output / f'{name}.tif')
+        polarizations = ('vv', 'vh') if args.both_bands else ('vv',)
+        for band in polarizations:
+            filename = f'{name}.tif' if band == 'vv' else f'{name}_vh.tif'
+            query = urlencode(dict(collection='sentinel-1-rtc', item=item, assets=band, dst_crs='EPSG:32722'))
+            download(f'{endpoint}?{query}', args.output / filename)
     query = urlencode(dict(
         where='1=1', outFields='*', outSR=4326, f='geojson', geometry=WINDOW, inSR=4326,
         geometryType='esriGeometryEnvelope', spatialRel='esriSpatialRelIntersects',

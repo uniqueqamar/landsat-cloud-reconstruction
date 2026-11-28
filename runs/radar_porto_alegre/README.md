@@ -35,6 +35,40 @@ Bright radar returns can occur over flooded buildings and vegetation. A pixel
 with no candidate does not establish that the location was dry or safe.
 [Published flood mapping limitations](https://activations.zki.dlr.de/images/activations/ACT154/dlr_disclaimer_sentinel1-flood-service_20221020.pdf)
 
+## VV and VH band comparison
+
+VV is the co-polarized radar band and VH is the cross-polarized band. We
+compared the same acquisitions, the same pixel grid, and the same −3 dB
+change threshold for both. All scores use 164,804 pixels inside the mapping
+area with valid measurements from both bands on both dates.
+
+| Darkening rule | Precision | Recall | Intersection over union |
+| --- | ---: | ---: | ---: |
+| VV | 72.7% | 41.0% | 0.355 |
+| VH | 89.0% | 32.8% | 0.315 |
+| Either VV or VH | 73.1% | **47.3%** | **0.403** |
+| Both VV and VH | **92.8%** | 26.5% | 0.259 |
+
+Using either band gave the best overlap on this case and detected 6,582 more
+pixels inside the mapped extent than VV alone. Requiring both bands agreed
+with the flood polygons more often where it flagged a pixel, but missed
+nearly three-quarters of the mapped extent. The scores are agreement with an
+approximately 11-hour-earlier map in this window.
+
+[Comparison image](band_comparison/comparison.png) ·
+[Four-layer GeoTIFF](band_comparison/darkening_by_band.tif) ·
+[Scores JSON](band_comparison/summary.json)
+
+The GeoTIFF contains VV, VH, either, and both in that band order. In QGIS use
+Singleband pseudocolor and select the band to view. Value 1 marks darkening
+and 255 is no data. Value 0 means the threshold was not crossed.
+
+```bash
+python examples/fetch_porto_alegre.py --both-bands --output outputs/porto_bands
+python compare_radar_bands.py --inputs outputs/porto_bands --output outputs/band_results
+open outputs/band_results/comparison.png
+```
+
 ## Run this example on a Mac
 
 From the repository root, activate the Python environment from the main README.
