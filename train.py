@@ -46,13 +46,25 @@ class ClearPatches(Dataset):
         return tuple(torch.from_numpy(x) for x in (observed, mask, target))
 
 
+CLOUD_TYPES = ('cloud', 'cirrus', 'shadow', 'dilated_only')
+
+
+def cloud_type_ids(qa):
+    """Assign each masked QA_PIXEL location to its highest-priority flag."""
+    types = np.zeros(qa.shape, dtype=np.uint8)
+    for index, bit in reversed(tuple(enumerate((3, 2, 4, 1), start=1))):
+        types[(qa & (1 << bit)) != 0] = index
+    return types
+
+
 class TemporalPairs(Dataset):
     def __init__(self, root, split, expanded=False, augment=False,
-                 shard_cache_limit_bytes=256 * 1024 * 1024):
+                 shard_cache_limit_bytes=256 * 1024 * 1024, *, include_cloud_types=False):
         if shard_cache_limit_bytes < 0:
             raise ValueError('shard_cache_limit_bytes must be non-negative')
         self.root = root
         self.augment = augment
+        self.include_cloud_types = include_cloud_types
         self.rng = np.random.default_rng(42)
         self.shard_cache = OrderedDict()
         self.shard_cache_bytes = 0
@@ -106,13 +118,15 @@ class TemporalPairs(Dataset):
         mask = ((qa & sum(1 << b for b in (1, 2, 3, 4))) != 0).astype('float32')[None]
         # Preserve observed pixels in the discriminator's real composite too.
         target = reference * mask + observed * (1 - mask)
+        arrays = [observed, mask, target]
+        if self.include_cloud_types:
+            arrays.append(cloud_type_ids(qa)[None])
         if self.augment:
             rotations = int(self.rng.integers(0, 4))
-            observed, mask, target = [np.rot90(x, rotations, axes=(-2, -1)).copy()
-                                      for x in (observed, mask, target)]
+            arrays = [np.rot90(x, rotations, axes=(-2, -1)).copy() for x in arrays]
             if self.rng.random() < .5:
-                observed, mask, target = [x[..., ::-1].copy() for x in (observed, mask, target)]
-        return tuple(torch.from_numpy(x) for x in (observed, mask, target))
+                arrays = [x[..., ::-1].copy() for x in arrays]
+        return tuple(torch.from_numpy(x) for x in arrays)
 
 
 def choose_device():
@@ -125,6 +139,17 @@ def choose_device():
 
 def masked_mae(prediction, target, mask):
     return ((prediction - target).abs() * mask).sum() / (mask.sum() * 4).clamp_min(1)
+
+
+def cloud_balanced_mae(prediction, target, cloud_types):
+    """Average the class MAEs across the QA types present in the batch."""
+    error = (prediction - target).abs().mean(dim=1, keepdim=True)
+    present = cloud_types == torch.arange(
+        1, len(CLOUD_TYPES) + 1, device=error.device, dtype=cloud_types.dtype
+    ).view(1, -1, 1, 1)
+    counts = present.sum(dim=(0, 2, 3))
+    class_mae = (error * present).sum(dim=(0, 2, 3)) / counts.clamp_min(1)
+    return class_mae.sum() / (counts > 0).sum().clamp_min(1)
 
 
 @torch.no_grad()
@@ -167,9 +192,13 @@ def main():
     p.add_argument('--architecture', choices=['legacy', 'context_residual_v2', 'srgan'], default='legacy')
     p.add_argument('--expanded-train', action='store_true')
     p.add_argument('--augment', action='store_true')
+    p.add_argument('--cloud-balance', action='store_true',
+                   help='Blend pixel-weighted and QA-type-balanced reconstruction losses')
     p.add_argument('--learning-rate', type=float, default=2e-4)
     p.add_argument('--max-steps', type=int, default=0, help='Smoke test only; 0 means full run')
     a = p.parse_args()
+    if a.cloud_balance and a.task != 'temporal':
+        p.error('--cloud-balance requires real temporal QA_PIXEL flags')
     if a.architecture == 'srgan':
         if a.gan_weight <= 0 or not 0 <= a.warmup < a.epochs:
             p.error('SRGAN requires positive --gan-weight and at least one adversarial epoch')
@@ -188,7 +217,7 @@ def main():
     d_optimizer = torch.optim.Adam(discriminator.parameters(), lr=1e-4) if discriminator else None
     bce = nn.BCEWithLogitsLoss()
     train_data = ClearPatches(a.data, 'train') if a.task == 'synthetic' else TemporalPairs(
-        a.data, 'train', expanded=a.expanded_train, augment=a.augment)
+        a.data, 'train', expanded=a.expanded_train, augment=a.augment, include_cloud_types=a.cloud_balance)
     val_data = ClearPatches(a.data, 'val', seed=1000) if a.task == 'synthetic' else TemporalPairs(a.data, 'val')
     train = DataLoader(train_data, batch_size=a.batch_size,
                        shuffle=True, num_workers=0)
@@ -209,8 +238,8 @@ def main():
     for epoch in range(a.epochs):
         model.train()
         losses = []
-        for observed, mask, target in train:
-            observed, mask, target = [t.to(device) for t in (observed, mask, target)]
+        for batch in train:
+            observed, mask, target, *cloud_types = [t.to(device) for t in batch]
             predicted = model(observed, mask)
             adversarial = discriminator is not None and epoch >= a.warmup
             if adversarial:
@@ -225,6 +254,8 @@ def main():
                     t.requires_grad_(False)
             optimizer.zero_grad(set_to_none=True)
             loss = masked_mae(predicted, target, mask)
+            if a.cloud_balance:
+                loss = 0.5 * (loss + cloud_balanced_mae(predicted, target, cloud_types[0]))
             if adversarial:
                 logits = discriminator(observed, mask, predicted)
                 loss = loss + a.gan_weight * bce(logits, torch.ones_like(logits))
@@ -244,7 +275,7 @@ def main():
                           gan_weight=a.gan_weight, epoch=epoch + 1,
                           architecture=a.architecture, train_samples=len(train_data),
                           expanded_train=a.expanded_train, augment=a.augment,
-                          learning_rate=a.learning_rate)
+                          learning_rate=a.learning_rate, cloud_balance=a.cloud_balance)
         torch.save(checkpoint, a.output / 'last.pt')
         eligible = a.architecture != 'srgan' or epoch >= a.warmup
         if eligible and scores['masked_mae'] < best:

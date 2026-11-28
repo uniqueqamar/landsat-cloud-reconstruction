@@ -1,0 +1,56 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 0.015533780671214149,
+    "masked_mae": 0.01828829651214415,
+    "masked_psnr_unit_range_db": 30.5960099284879,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 2,
+    "train_loss": 0.015167132903963832,
+    "masked_mae": 0.01675162480243364,
+    "masked_psnr_unit_range_db": 31.090903604430213,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 3,
+    "train_loss": 0.01850489966602901,
+    "masked_mae": 0.01667573441252782,
+    "masked_psnr_unit_range_db": 31.1154275618711,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 4,
+    "train_loss": 0.018615174967543047,
+    "masked_mae": 0.01679807791644408,
+    "masked_psnr_unit_range_db": 31.08057830455528,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 5,
+    "train_loss": 0.018651822408250834,
+    "masked_mae": 0.016888715917354816,
+    "masked_psnr_unit_range_db": 31.035307877425904,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 6,
+    "train_loss": 0.018636678258683217,
+    "masked_mae": 0.01729467316389737,
+    "masked_psnr_unit_range_db": 30.902650865258472,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  }
+]

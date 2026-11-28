@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 from model import make_generator
 from quality_metrics import MaskedQuality
 from spatial_fill import spatial_fill
-from train import ClearPatches, TemporalPairs, choose_device
+from train import CLOUD_TYPES, ClearPatches, TemporalPairs, choose_device
 
 
 # Bounds describe the QA-masked fraction of a patch.
@@ -17,7 +17,7 @@ COVERAGE_RANGES = ((0.0, 0.30), (0.30, 0.50), (0.50, 1.00))
 
 
 @torch.no_grad()
-def audit(model, loader, device, *, coverage_breakdown=False):
+def audit(model, loader, device, *, coverage_breakdown=False, cloud_breakdown=False):
     """Pool error across masked pixels and optionally group patches by coverage."""
     model.eval()
     methods = ['model', 'mean_fill']
@@ -26,7 +26,8 @@ def audit(model, loader, device, *, coverage_breakdown=False):
     overall_scores = {name: MaskedQuality() for name in methods}
     coverage_scores = [{name: MaskedQuality() for name in methods} for _ in COVERAGE_RANGES]
     patch_counts = [0] * len(COVERAGE_RANGES)
-    for observed, mask, target in loader:
+    type_scores = {kind: {name: MaskedQuality() for name in methods} for kind in CLOUD_TYPES}
+    for observed, mask, target, *categories in loader:
         observed, mask, target = (tensor.to(device) for tensor in (observed, mask, target))
         clear = 1 - mask
         clear_count = clear.sum((2, 3), keepdim=True)
@@ -37,9 +38,12 @@ def audit(model, loader, device, *, coverage_breakdown=False):
         if coverage_breakdown:
             predictions['spatial_interpolation'] = spatial_fill(observed, mask)
             predictions['cloudy_input'] = observed
-        masks = mask.detach().cpu().numpy()
+        masks = mask.detach().cpu().numpy().astype(bool)
         references = target.detach().cpu().numpy()
         predictions = {name: value.detach().cpu().numpy() for name, value in predictions.items()}
+        if cloud_breakdown and not categories:
+            raise ValueError('Cloud breakdown requires QA type labels for each patch')
+        cloud_types = categories[0].detach().cpu().numpy() if cloud_breakdown else None
         for index, (patch_mask, reference) in enumerate(zip(masks, references)):
             if not patch_mask.any():
                 continue
@@ -52,6 +56,10 @@ def audit(model, loader, device, *, coverage_breakdown=False):
                 overall_scores[name].add(batch[index], reference, patch_mask)
                 if coverage_breakdown:
                     coverage_scores[group_index][name].add(batch[index], reference, patch_mask)
+                if cloud_breakdown:
+                    for type_id, kind in enumerate(CLOUD_TYPES, start=1):
+                        selected = patch_mask & (cloud_types[index] == type_id)
+                        type_scores[kind][name].add(batch[index], reference, selected)
     result = {name: quality.result() for name, quality in overall_scores.items()}
     result['reference_caveat'] = 'Temporal reference is a later observation, not simultaneous ground truth.'
     if coverage_breakdown:
@@ -64,6 +72,14 @@ def audit(model, loader, device, *, coverage_breakdown=False):
             }
             for (lower, upper), count, scores in zip(COVERAGE_RANGES, patch_counts, coverage_scores)
         ]
+    if cloud_breakdown:
+        result['cloud_types'] = {
+            kind: {
+                'scored_pixels': scores['model'].pixels,
+                'metrics': {name: score.result() for name, score in scores.items()} if scores['model'].pixels else None,
+            }
+            for kind, scores in type_scores.items()
+        }
     return result
 
 
@@ -75,16 +91,22 @@ def main():
     parser.add_argument('--split', choices=('val', 'test'), default='val')
     parser.add_argument('--coverage-breakdown', action='store_true',
                         help='Include cloudy input and spatial fill baselines, grouped by masked area')
+    parser.add_argument('--cloud-breakdown', action='store_true',
+                        help='Report mutually exclusive cloud, cirrus, shadow, and dilated-only QA groups')
     args = parser.parse_args()
     checkpoint = torch.load(args.weights, weights_only=True, map_location='cpu')
-    dataset = (ClearPatches(args.data, args.split, seed=1000)
-               if checkpoint['training'] == 'synthetic' else TemporalPairs(args.data, args.split))
+    if args.cloud_breakdown and checkpoint['training'] == 'synthetic':
+        parser.error('--cloud-breakdown requires real temporal QA_PIXEL flags')
+    if checkpoint['training'] == 'synthetic':
+        dataset = ClearPatches(args.data, args.split, seed=1000)
+    else:
+        dataset = TemporalPairs(args.data, args.split, include_cloud_types=args.cloud_breakdown)
     model = make_generator(checkpoint)
     model.load_state_dict(checkpoint['model'])
     device = choose_device()
     model.to(device)
     scores = audit(model, DataLoader(dataset, batch_size=1, num_workers=0), device,
-                   coverage_breakdown=args.coverage_breakdown)
+                   coverage_breakdown=args.coverage_breakdown, cloud_breakdown=args.cloud_breakdown)
     scores['split'] = args.split
     scores['sample_count'] = len(dataset)
     args.output.parent.mkdir(parents=True, exist_ok=True)

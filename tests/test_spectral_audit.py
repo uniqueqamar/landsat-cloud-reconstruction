@@ -47,3 +47,20 @@ def test_coverage_groups_share_the_same_mask_and_report_empty_groups():
         assert low['metrics'][method]['masked_pixel_count'] == 3
         assert medium['metrics'][method]['masked_pixel_count'] == 5
         assert scores[method]['masked_mae'] == expected_error
+
+
+def test_cloud_groups_partition_float_reconstruction_mask():
+    from train import cloud_type_ids
+
+    qa = torch.tensor([[0, 8 | 16, 16, 2]], dtype=torch.int32)
+    categories = torch.from_numpy(cloud_type_ids(qa.numpy()))[None, None]
+    mask = (categories > 0).float()
+    target = torch.full((1, 4, 1, 4), .25)
+    observed = target + .5 * mask
+    scores = audit(IdentityModel(), [(observed, mask, target, categories)],
+                   torch.device('cpu'), cloud_breakdown=True)
+    groups = scores['cloud_types']
+    assert [groups[k]['scored_pixels'] for k in ('cloud', 'cirrus', 'shadow', 'dilated_only')] == [1, 0, 1, 1]
+    assert groups['cirrus']['metrics'] is None
+    assert sum(entry['scored_pixels'] for entry in groups.values()) == scores['model']['masked_pixel_count']
+    assert groups['shadow']['metrics']['model']['masked_mae'] == .5

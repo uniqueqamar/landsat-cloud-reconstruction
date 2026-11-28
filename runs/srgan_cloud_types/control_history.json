@@ -1,0 +1,56 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 0.015601243022671444,
+    "masked_mae": 0.018251077858687455,
+    "masked_psnr_unit_range_db": 30.606623446248943,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 2,
+    "train_loss": 0.015239948738303226,
+    "masked_mae": 0.016738927987705727,
+    "masked_psnr_unit_range_db": 31.095648411287314,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 3,
+    "train_loss": 0.018578310844377947,
+    "masked_mae": 0.016678971479769742,
+    "masked_psnr_unit_range_db": 31.115482284765548,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 4,
+    "train_loss": 0.018694380314042,
+    "masked_mae": 0.016771225415291215,
+    "masked_psnr_unit_range_db": 31.089658867681507,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 5,
+    "train_loss": 0.018711286699557204,
+    "masked_mae": 0.016853755331240998,
+    "masked_psnr_unit_range_db": 31.048514802023902,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  },
+  {
+    "epoch": 6,
+    "train_loss": 0.01870823159845451,
+    "masked_mae": 0.017270497170734474,
+    "masked_psnr_unit_range_db": 30.91338049994694,
+    "occluded_input_masked_mae": 0.0687988853504798,
+    "skipped_unmasked_samples": 0,
+    "evaluation": "real cloudy inputs with eight-day temporal proxy targets, val split"
+  }
+]

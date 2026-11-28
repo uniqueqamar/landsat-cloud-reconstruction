@@ -107,6 +107,46 @@ python spectral_audit.py --weights outputs/srgan_run/best.pt --split test \
   --coverage-breakdown --output outputs/srgan_test_metrics.json
 ```
 
+## SRGAN training by cloud type
+
+We retrained two SRGAN variants on the same 118 Landsat pairs with the same
+augmentations, seed, and six-epoch schedule. The cloud-balanced run gives
+extra weight to underrepresented QA groups by averaging the pixel-weighted
+reconstruction loss with the mean loss across the types present in each batch.
+Both checkpoints were selected by overall validation MAE.
+
+| Test group | Pixels | Original SRGAN MAE ↓ | Expanded control MAE ↓ | Cloud-balanced MAE ↓ |
+| --- | ---: | ---: | ---: | ---: |
+| All masked pixels | 60,269 | 0.016874 | 0.016685 | 0.016689 |
+| Cloud | 23,076 | 0.018132 | 0.017835 | 0.017832 |
+| Cloud shadow | 26,253 | 0.015944 | 0.015876 | 0.015890 |
+| Dilated cloud buffer only | 10,940 | 0.016454 | 0.016200 | 0.016195 |
+
+When QA flags overlap, cloud takes priority, followed by cirrus, shadow, and
+the dilated cloud buffer. Cirrus had no separately labeled pixels in these
+splits. The buffer represents proximity to a cloud and is not a distinct
+physical cloud type.
+
+Both expanded runs cut masked MAE by about 1.1% versus the original 22-pair
+SRGAN run. Cloud balancing made almost no difference versus the matched
+expanded control. It reduced MAE slightly on cloud and buffer pixels and
+increased it slightly on shadows. The result covers ten patches from one
+scene against a later reference.
+
+To run the expanded control, use `runs/srgan_cloud_types/control.pt` in the
+prediction command above. Use `runs/srgan_cloud_types/balanced.pt` for the
+cloud-balanced variant. Both use the existing input format.
+
+```bash
+python train.py --task temporal --architecture srgan --expanded-train --augment \
+  --epochs 6 --gan-weight 0.005 --warmup 2 --cloud-balance --output outputs/cloud_srgan
+python spectral_audit.py --weights outputs/cloud_srgan/best.pt --split test \
+  --coverage-breakdown --cloud-breakdown --output outputs/cloud_srgan_test.json
+```
+
+Omit `--cloud-balance` to train the matched control.
+[Weights, full scores, and preview](runs/srgan_cloud_types).
+
 ## Why the filled areas can look wrong
 
 Thick clouds hide the optical signal from the ground. These models see the surrounding clear pixels and have to guess what continues under the cloud. V2 often produces smooth patches, and the GAN can add colored edges or plausible-looking details in the wrong place. Small features are also hard to see at Landsat’s 30 m pixel size. The clearer reference was taken eight days later, so some differences may come from real changes on the ground.
